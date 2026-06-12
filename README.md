@@ -38,6 +38,20 @@ Update these sections:
 - `REGIONAL_EVENTS`, `RIVERDALE_A_SCORES`, `RIVERDALE_B_SCORES`: event order and scores.
 - `TEAM_A_ASSIGNMENTS`, `TEAM_B_ASSIGNMENTS`: members assigned to each event.
 - `TOP5`: regional top-five placements shown in result modals.
+- `COUNTDOWN_EVENTS`: dates for the live countdowns on the Home "Your Season" panel. Edit as the 2026–27 calendar firms up.
+
+## 2026 Experience Layer
+
+A second styling/behavior layer (`assets/css/enhancements.css` + `assets/js/features.js`) adds a set of features on top of the original site. None of it requires a build step or any new dependency — it is plain CSS and vanilla JavaScript, and it reads the same data in `assets/js/data.js`.
+
+- **Command palette** — press `⌘K` / `Ctrl+K` (or `/`) to fuzzy-search every page, event, teammate, resource, and quick action, then jump there with the keyboard.
+- **Dark / light theme** — the floating moon/sun button (bottom-right) toggles a full dark theme. The choice is remembered per device and respects the system preference on first visit.
+- **Analytics tab** — an animated data view of the 2026 Regional: medal/Top-10 counts, best finish, average placement, a per-event placement chart (Team A / Team B / Both), category strength, a finish-distribution donut, and a best-results leaderboard. All computed live from the results data.
+- **Study Hub tab** — flip-card flashcards for all 23 events, a multiple-choice quiz, a Pomodoro focus timer that tracks sessions/minutes, and a season milestone checklist. Flashcards, quiz, timer stats, and milestones all run client-side; progress saves in the browser.
+- **Home "Your Season" panel** — pick your name to see your assigned events, prep progress, and live countdowns to the next season's milestones. Saved on the device only.
+- **Polish** — cinematic preloader, scroll progress bar, back-to-top button, toast notifications, and confetti on wins (gold medal, completed focus session, finished checklist).
+
+All new data is stored in the browser's `localStorage` only; nothing is uploaded.
 
 ### Leaders Page Notes
 
@@ -71,8 +85,10 @@ Replace that file with another browser-friendly image if the team photo changes.
 index.html                  Main GitHub Pages entry point
 sciolyedit.html             Redirect for the old file name
 assets/css/styles.css       Layout, colors, responsive behavior, transitions
+assets/css/enhancements.css Theme engine, command palette, analytics, study hub, dark mode
 assets/js/data.js           Editable team/event/results data
 assets/js/app.js            Rendering, filters, modals, navigation, animations
+assets/js/features.js       Command palette, themes, analytics, study hub, personalization
 assets/images/              Local site images
 ```
 

@@ -6,8 +6,22 @@
 <title>Riverdale Science Olympiad 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/styles.css">
+<link rel="stylesheet" href="assets/css/enhancements.css">
 </head>
 <body>
+
+<!-- CINEMATIC PRELOADER -->
+<div id="fx-preloader">
+  <div class="fx-pre-crest">🦅</div>
+  <div>
+    <div class="fx-pre-title">Riverdale Science Olympiad</div>
+    <div class="fx-pre-sub">Loading your season hub…</div>
+  </div>
+  <div class="fx-pre-bar"><span></span></div>
+</div>
+
+<!-- SCROLL PROGRESS -->
+<div id="fx-progress"></div>
 
 <header id="live-header">
   <div class="header-bg">
@@ -39,8 +53,10 @@
     <div class="nav-tab" onclick="showView('newcomer', this)">New Members</div>
     <div class="nav-tab" onclick="showView('events', this)">Events</div>
     <div class="nav-tab" onclick="showView('regional', this)">Results</div>
+    <div class="nav-tab" onclick="showView('analytics', this)">Analytics</div>
     <div class="nav-tab" onclick="showView('roster', this)">Team</div>
     <div class="nav-tab" onclick="showView('resources', this)">Resources</div>
+    <div class="nav-tab" onclick="showView('studyhub', this)">Study Hub</div>
     <div class="nav-tab" onclick="showView('schedule', this)">Schedule</div>
     <div class="nav-tab" onclick="showView('request', this)">Request</div>
     <div class="nav-tab" onclick="showView('leaders', this)">Leaders</div>
@@ -90,6 +106,8 @@
         <div class="label">Events Per Member</div>
       </div>
     </div>
+
+    <div id="season-personalizer" class="season-personalizer reveal"></div>
 
     <div class="quick-tips reveal">
       <h3>Quick-Start Tips</h3>
@@ -291,6 +309,12 @@
       </div>
     </div>
   </div>
+
+  <!-- ANALYTICS VIEW (rendered by features.js) -->
+  <div id="view-analytics" class="view"></div>
+
+  <!-- STUDY HUB VIEW (rendered by features.js) -->
+  <div id="view-studyhub" class="view"></div>
 
   <!-- SCHEDULE VIEW -->
   <div id="view-schedule" class="view">
@@ -653,7 +677,38 @@
   </div>
 </div>
 
+<!-- COMMAND PALETTE -->
+<div id="fx-palette" class="hidden">
+  <div class="fx-palette-box">
+    <div class="fx-palette-input-row">
+      <span class="fx-search-ico">🔍</span>
+      <input id="fx-palette-input" type="text" placeholder="Search events, teammates, pages, actions…" autocomplete="off" spellcheck="false">
+      <span class="fx-palette-esc">ESC</span>
+    </div>
+    <div id="fx-palette-results" class="fx-palette-results"></div>
+  </div>
+</div>
+
+<!-- FLOATING CONTROL DOCK -->
+<div class="fx-dock">
+  <button id="fx-cmd" class="fx-fab" type="button" title="Search (⌘K or /)" aria-label="Open command palette">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+  </button>
+  <button id="fx-theme" class="fx-fab" type="button" title="Toggle dark / light" aria-label="Toggle theme">
+    <svg class="fx-fab-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    <svg class="fx-fab-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><line x1="12" y1="2" x2="12" y2="5"></line><line x1="12" y1="19" x2="12" y2="22"></line><line x1="2" y1="12" x2="5" y2="12"></line><line x1="19" y1="12" x2="22" y2="12"></line><line x1="4.9" y1="4.9" x2="6.9" y2="6.9"></line><line x1="17.1" y1="17.1" x2="19.1" y2="19.1"></line><line x1="4.9" y1="19.1" x2="6.9" y2="17.1"></line><line x1="17.1" y1="6.9" x2="19.1" y2="4.9"></line></svg>
+  </button>
+  <button id="fx-top" class="fx-fab" type="button" title="Back to top" aria-label="Back to top">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+  </button>
+</div>
+
+<!-- TOASTS + CONFETTI -->
+<div id="fx-toasts"></div>
+<canvas id="fx-confetti"></canvas>
+
 <script src="assets/js/data.js"></script>
 <script src="assets/js/app.js"></script>
+<script src="assets/js/features.js"></script>
 </body>
 </html>

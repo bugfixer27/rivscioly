@@ -612,3 +612,13 @@ const TOP5 = {
     ["LaGuardia - A", 1], ["Regis - A", 2], ["Bronx Science - A", 3], ["HSMSE - A", 4], ["HSMSE - B", 5]
   ]
 };
+
+
+// ============ COUNTDOWN TARGETS ============
+// Live countdowns shown on the Home "Your Season" panel. Edit dates as the
+// 2026–27 calendar firms up. Use ISO date-time strings (local time).
+const COUNTDOWN_EVENTS = [
+  { label: "2026–27 Season Kickoff", date: "2026-09-02T08:00:00" },
+  { label: "Invitational Season", date: "2026-11-07T09:00:00" },
+  { label: "NYC Regional (est.)", date: "2027-01-23T08:00:00" }
+];
