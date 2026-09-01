@@ -188,6 +188,7 @@
     { view: 'roster', title: 'Team', sub: 'Roster & event assignments', icon: '👥' },
     { view: 'resources', title: 'Resources', sub: 'Study links & tools', icon: '🌐' },
     { view: 'studyhub', title: 'Study Hub', sub: 'Flashcards, quiz, focus timer', icon: '🧠' },
+    { view: 'ai', title: 'SciOly AI', sub: 'Ask the team AI a question', icon: '✨' },
     { view: 'schedule', title: 'Schedule', sub: 'Season calendar', icon: '🗓️' },
     { view: 'request', title: 'Request', sub: 'Submit a purchase request', icon: '🛒' },
     { view: 'leaders', title: 'Leaders', sub: 'Protected dashboard', icon: '🔒' },

@@ -57,6 +57,7 @@
     <div class="nav-tab" onclick="showView('roster', this)">Team</div>
     <div class="nav-tab" onclick="showView('resources', this)">Resources</div>
     <div class="nav-tab" onclick="showView('studyhub', this)">Study Hub</div>
+    <div class="nav-tab" onclick="showView('ai', this)">SciOly AI</div>
     <div class="nav-tab" onclick="showView('schedule', this)">Schedule</div>
     <div class="nav-tab" onclick="showView('request', this)">Request</div>
     <div class="nav-tab" onclick="showView('leaders', this)">Leaders</div>
@@ -577,6 +578,28 @@
       </div>
 
       <div class="roster-grid" id="leaders-roster-grid"></div>
+    </div>
+  </div>
+
+  <!-- SCIOLY AI VIEW -->
+  <div id="view-ai" class="view">
+    <div class="section-title reveal">Ask SciOly AI</div>
+    <div class="section-subtitle reveal">Get help studying Science Olympiad concepts, planning practice, and reviewing event material.</div>
+
+    <div class="ai-card reveal">
+      <form id="ai-query-form" onsubmit="askSciOlyAI(event)">
+        <label for="ai-query">What would you like to know?</label>
+        <textarea id="ai-query" rows="5" maxlength="2000" placeholder="Example: Explain how to identify an igneous rock for Rocks and Minerals." required></textarea>
+        <div class="ai-form-footer">
+          <span>AI can make mistakes. Check important answers against the official event rules.</span>
+          <button id="ai-submit" type="submit">Ask SciOly AI</button>
+        </div>
+      </form>
+
+      <div id="ai-response" class="ai-response" aria-live="polite" hidden>
+        <div class="ai-response-label">SciOly AI</div>
+        <div id="ai-response-text"></div>
+      </div>
     </div>
   </div>
 

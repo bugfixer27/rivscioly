@@ -9,6 +9,10 @@ let budgetLoaded = false;
 let budgetLoading = false;
 let budgetJsonpCounter = 0;
 
+// Replace this route with the endpoint supplied by the Palantir Foundry API team.
+// Keep Foundry API tokens on the server, never in this public JavaScript file.
+const SCIOLY_AI_API_URL = '/api/scioly-ai';
+
 function escapeHTML(value) {
   return String(value)
     .replaceAll('&', '&amp;')
@@ -16,6 +20,44 @@ function escapeHTML(value) {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;');
+}
+
+async function askSciOlyAI(event) {
+  event.preventDefault();
+
+  const query = document.getElementById('ai-query').value.trim();
+  const button = document.getElementById('ai-submit');
+  const responseBox = document.getElementById('ai-response');
+  const responseText = document.getElementById('ai-response-text');
+  if (!query) return;
+
+  button.disabled = true;
+  button.textContent = 'Thinking…';
+  responseBox.hidden = false;
+  responseBox.classList.add('loading');
+  responseText.textContent = 'Searching the Science Olympiad knowledge base…';
+
+  try {
+    const response = await fetch(SCIOLY_AI_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query })
+    });
+
+    if (!response.ok) throw new Error(`Request failed (${response.status})`);
+
+    const data = await response.json();
+    const answer = data.answer || data.response || data.result || data.output;
+    if (!answer) throw new Error('The API returned no answer');
+    responseText.textContent = typeof answer === 'string' ? answer : JSON.stringify(answer, null, 2);
+  } catch (error) {
+    responseText.textContent = 'SciOly AI is not connected yet. Please try again later or ask a team leader.';
+    console.error('SciOly AI request failed:', error);
+  } finally {
+    responseBox.classList.remove('loading');
+    button.disabled = false;
+    button.textContent = 'Ask SciOly AI';
+  }
 }
 
 function formatBudgetValue(value) {

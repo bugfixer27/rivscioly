@@ -48,10 +48,24 @@ A second styling/behavior layer (`assets/css/enhancements.css` + `assets/js/feat
 - **Dark / light theme** — the floating moon/sun button (bottom-right) toggles a full dark theme. The choice is remembered per device and respects the system preference on first visit.
 - **Analytics tab** — an animated data view of the 2026 Regional: medal/Top-10 counts, best finish, average placement, a per-event placement chart (Team A / Team B / Both), category strength, a finish-distribution donut, and a best-results leaderboard. All computed live from the results data.
 - **Study Hub tab** — flip-card flashcards for all 23 events, a multiple-choice quiz, a Pomodoro focus timer that tracks sessions/minutes, and a season milestone checklist. Flashcards, quiz, timer stats, and milestones all run client-side; progress saves in the browser.
+- **SciOly AI tab** — sends a question to the team's Palantir Foundry-backed AI endpoint and displays its answer.
 - **Home "Your Season" panel** — pick your name to see your assigned events, prep progress, and live countdowns to the next season's milestones. Saved on the device only.
 - **Polish** — cinematic preloader, scroll progress bar, back-to-top button, toast notifications, and confetti on wins (gold medal, completed focus session, finished checklist).
 
 All new data is stored in the browser's `localStorage` only; nothing is uploaded.
+
+### SciOly AI API Setup
+
+The AI form sends this request:
+
+```http
+POST /api/scioly-ai
+Content-Type: application/json
+
+{"query":"the student's question"}
+```
+
+The endpoint should return JSON in the form `{"answer":"the model's answer"}`. Update `SCIOLY_AI_API_URL` near the top of `assets/js/app.js` if the API team provides a different URL. Because this is a public static site, Foundry credentials must stay in the API/backend and must not be added to the website JavaScript.
 
 ### Leaders Page Notes
 

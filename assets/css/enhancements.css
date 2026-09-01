@@ -165,6 +165,10 @@ html[data-theme="dark"] .nav-inner {
   border-color: rgba(232, 201, 106, 0.2);
 }
 html[data-theme="dark"] .nav-tab { color: #d9bcbc; }
+html[data-theme="dark"] .nav-tab.active { color: #fff; }
+html[data-theme="dark"] .ai-card { background: rgba(42, 20, 20, 0.92); border-color: rgba(232, 201, 106, 0.2); }
+html[data-theme="dark"] .ai-card textarea { background: #241111; color: #f8eded; border-color: #654a2c; }
+html[data-theme="dark"] .ai-response { background: #241111; color: #f8eded; }
 html[data-theme="dark"] .leader-action-btn { background: rgba(255,255,255,0.05); color: var(--gold-light); }
 
 /* =====================================================================
