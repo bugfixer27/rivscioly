@@ -811,7 +811,6 @@
   }
 
   .quick-tips,
-  .schedule-card,
   .info-card,
   .contact-info-box {
     background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.93));
@@ -827,7 +826,6 @@
   }
 
   .quick-tips::before,
-  .schedule-card::before,
   .info-card::before,
   .contact-info-box::before {
     content: '';
@@ -1392,75 +1390,6 @@
   }
 
   .resource-link:hover { background: var(--crimson-deep); transform: translateY(-2px); }
-
-  /* === SCHEDULE PAGE === */
-  .schedule-card {
-    padding: 28px 32px;
-    margin-bottom: 20px;
-  }
-
-  .schedule-card h3 {
-    font-family: 'Playfair Display', serif;
-    color: var(--crimson);
-    font-size: 1.25rem;
-    margin-bottom: 16px;
-  }
-
-  .timeline {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    position: relative;
-  }
-
-  .timeline-item {
-    display: flex;
-    gap: 20px;
-    padding: 14px 0;
-    border-bottom: 1px solid #f0e8e8;
-    align-items: flex-start;
-    transition: transform 0.25s ease, background 0.25s ease;
-  }
-
-  .timeline-item:hover {
-    transform: translateX(4px);
-    background: linear-gradient(90deg, rgba(201,168,76,0.06), transparent 60%);
-  }
-
-  .timeline-item:last-child { border-bottom: none; }
-
-  .timeline-date {
-    min-width: 110px;
-    font-weight: 700;
-    color: var(--crimson);
-    font-size: 0.88rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding-top: 2px;
-  }
-
-  .timeline-content {
-    flex: 1;
-    font-size: 0.93rem;
-    line-height: 1.55;
-    color: var(--text);
-  }
-
-  .timeline-dot {
-    width: 10px;
-    height: 10px;
-    background: var(--gold);
-    border-radius: 50%;
-    margin-top: 5px;
-    flex-shrink: 0;
-    box-shadow: 0 0 0 0 rgba(201,168,76,0.35);
-    animation: pulseDot 2.8s ease-in-out infinite;
-  }
-
-  @keyframes pulseDot {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(201,168,76,0.28); }
-    50% { box-shadow: 0 0 0 8px rgba(201,168,76,0); }
-  }
 
   /* === CONTACT PAGE === */
   .contact-grid {
@@ -2919,7 +2848,6 @@ header#live-header::after {
 .stat-card,
 .quick-tips,
 .info-card,
-.schedule-card,
 .contact-info-box,
 .leaders-login,
 .budget-hq,
@@ -2956,7 +2884,6 @@ header#live-header::after {
 
 .quick-tips h3,
 .section-title,
-.schedule-card h3,
 .resource-card h3,
 .contact-card h3,
 .roster-card h3,
@@ -3141,12 +3068,7 @@ header#live-header::after {
   scrollbar-color: var(--gold) transparent;
 }
 
-.timeline-item {
-  border-bottom-color: rgba(92,15,15,0.10);
-}
-
-.comp-day-item::before,
-.timeline-dot {
+.comp-day-item::before {
   background: var(--gold);
 }
 

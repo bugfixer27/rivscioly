@@ -2,7 +2,7 @@
    RIVERDALE SCIENCE OLYMPIAD — EXPERIENCE LAYER (features.js)
    Loads AFTER data.js + app.js. Adds: preloader, theme engine, scroll
    chrome, command palette, toasts/confetti, home personalization,
-   live countdowns, the Analytics dashboard, and the Study Hub.
+   live countdowns, and the Study Hub.
    Everything is self-contained and reads the existing data globals.
    ===================================================================== */
 (function () {
@@ -14,10 +14,6 @@
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
   };
-  const ord = (window.ordinal) ? window.ordinal : function (n) {
-    const s = ['th', 'st', 'nd', 'rd'], v = n % 100;
-    return n + (s[(v - 20) % 10] || s[v] || s[0]);
-  };
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const $ = (sel, root) => (root || document).querySelector(sel);
 
@@ -25,11 +21,7 @@
   // Bridge the values we read onto window so the rest of this file can use them.
   function exposeGlobals() {
     try { window.EVENTS = window.EVENTS || EVENTS; } catch (e) {}
-    try { window.REGIONAL_EVENTS = window.REGIONAL_EVENTS || REGIONAL_EVENTS; } catch (e) {}
-    try { window.REGIONAL_TYPES = window.REGIONAL_TYPES || REGIONAL_TYPES; } catch (e) {}
     try { window.REGIONAL_ICONS = window.REGIONAL_ICONS || REGIONAL_ICONS; } catch (e) {}
-    try { window.RIVERDALE_A_SCORES = window.RIVERDALE_A_SCORES || RIVERDALE_A_SCORES; } catch (e) {}
-    try { window.RIVERDALE_B_SCORES = window.RIVERDALE_B_SCORES || RIVERDALE_B_SCORES; } catch (e) {}
     try { window.TEAM_A_ASSIGNMENTS = window.TEAM_A_ASSIGNMENTS || TEAM_A_ASSIGNMENTS; } catch (e) {}
     try { window.TEAM_B_ASSIGNMENTS = window.TEAM_B_ASSIGNMENTS || TEAM_B_ASSIGNMENTS; } catch (e) {}
     try { window.TEAM_LEADERS = window.TEAM_LEADERS || TEAM_LEADERS; } catch (e) {}
@@ -184,12 +176,10 @@
     { view: 'newcomer', title: 'New Members', sub: 'How the club works', icon: '🌟' },
     { view: 'events', title: 'Events', sub: 'All 23 Division C events', icon: '📋' },
     { view: 'regional', title: 'Results', sub: '2026 NYC Regional placements', icon: '🏅' },
-    { view: 'analytics', title: 'Analytics', sub: 'Charts & performance breakdown', icon: '📊' },
     { view: 'roster', title: 'Team', sub: 'Roster & event assignments', icon: '👥' },
     { view: 'resources', title: 'Resources', sub: 'Study links & tools', icon: '🌐' },
     { view: 'studyhub', title: 'Study Hub', sub: 'Flashcards, quiz, focus timer', icon: '🧠' },
     { view: 'ai', title: 'SciOly AI', sub: 'Ask the team AI a question', icon: '✨' },
-    { view: 'schedule', title: 'Schedule', sub: 'Season calendar', icon: '🗓️' },
     { view: 'request', title: 'Request', sub: 'Submit a purchase request', icon: '🛒' },
     { view: 'leaders', title: 'Leaders', sub: 'Protected dashboard', icon: '🔒' },
     { view: 'contact', title: 'Contact', sub: 'Reach leaders & advisor', icon: '✉️' }
@@ -519,256 +509,6 @@
       });
     });
   }
-
-  /* ===================================================================
-     ANALYTICS DASHBOARD
-     =================================================================== */
-  let analyticsTeam = 'both';
-  let analyticsCelebrated = false;
-
-  function teamStats(scores, assignments) {
-    const REG = window.REGIONAL_EVENTS || [];
-    const TYPES = window.REGIONAL_TYPES || {};
-    const ICONS = window.REGIONAL_ICONS || {};
-    let entered = 0, gold = 0, silver = 0, bronze = 0, top10 = 0, sum = 0, best = Infinity;
-    const perEvent = [];
-    REG.forEach((name, i) => {
-      const place = scores[i];
-      const members = (assignments[name] || []).filter(Boolean);
-      const noEntry = place === 32 && members.length === 0;
-      perEvent.push({ name, type: TYPES[name] || 'study', icon: ICONS[name] || '📌', place, members, noEntry });
-      if (!noEntry) {
-        entered++; sum += place; best = Math.min(best, place);
-        if (place === 1) gold++; else if (place === 2) silver++; else if (place === 3) bronze++;
-        if (place <= 10) top10++;
-      }
-    });
-    return {
-      entered, gold, silver, bronze, top10, medals: gold + silver + bronze,
-      avg: entered ? sum / entered : 0, sum, best: best === Infinity ? null : best, perEvent
-    };
-  }
-
-  function scopeStats() {
-    const A = teamStats(window.RIVERDALE_A_SCORES || [], window.TEAM_A_ASSIGNMENTS || {});
-    const B = teamStats(window.RIVERDALE_B_SCORES || [], window.TEAM_B_ASSIGNMENTS || {});
-    if (analyticsTeam === 'A') return { stats: A, label: 'Team A', teams: [{ key: 'A', s: A }] };
-    if (analyticsTeam === 'B') return { stats: B, label: 'Team B', teams: [{ key: 'B', s: B }] };
-    const merged = {
-      entered: A.entered + B.entered, gold: A.gold + B.gold, silver: A.silver + B.silver,
-      bronze: A.bronze + B.bronze, top10: A.top10 + B.top10, medals: A.medals + B.medals,
-      sum: A.sum + B.sum, avg: (A.entered + B.entered) ? (A.sum + B.sum) / (A.entered + B.entered) : 0,
-      best: Math.min(A.best == null ? Infinity : A.best, B.best == null ? Infinity : B.best),
-      perEvent: A.perEvent.concat(B.perEvent)
-    };
-    if (merged.best === Infinity) merged.best = null;
-    return { stats: merged, label: 'Both Teams', teams: [{ key: 'A', s: A }, { key: 'B', s: B }] };
-  }
-
-  function tierClass(place) {
-    if (place <= 3) return 'tier-gold';
-    if (place <= 10) return 'tier-top10';
-    if (place <= 20) return 'tier-mid';
-    return 'tier-none';
-  }
-
-  function perfBars(s, teamKey) {
-    const rows = s.perEvent
-      .filter(e => !e.noEntry)
-      .sort((a, b) => a.place - b.place);
-    const skipped = s.perEvent.filter(e => e.noEntry);
-    let html = rows.map(e => {
-      const w = ((33 - e.place) / 32) * 100;
-      return `<div class="perf-bar-row">
-        <div class="perf-bar-label" title="${esc(e.name)}">${e.icon} ${esc(e.name)}</div>
-        <div class="perf-bar-track">
-          <div class="perf-bar-fill ${tierClass(e.place)}" data-w="${w.toFixed(1)}"></div>
-          <div class="perf-bar-num">${ord(e.place)}</div>
-        </div>
-      </div>`;
-    }).join('');
-    if (skipped.length) {
-      html += `<div class="perf-bar-row">
-        <div class="perf-bar-label" style="opacity:.7">Not entered</div>
-        <div class="perf-bar-track"><div class="perf-bar-empty">${skipped.length} event${skipped.length === 1 ? '' : 's'} not staffed</div></div>
-      </div>`;
-    }
-    return html;
-  }
-
-  function categoryStats(s) {
-    const cats = { study: [], build: [], lab: [] };
-    s.perEvent.forEach(e => { if (!e.noEntry && cats[e.type]) cats[e.type].push(e.place); });
-    const out = {};
-    Object.keys(cats).forEach(k => {
-      const arr = cats[k];
-      out[k] = arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null;
-    });
-    return out;
-  }
-
-  function distribution(s) {
-    const tiers = [
-      { label: 'Top 3 (medal)', color: '#d9af3e', n: 0 },
-      { label: '4th–10th', color: '#8B1A1A', n: 0 },
-      { label: '11th–20th', color: '#a9696b', n: 0 },
-      { label: '21st–32nd', color: '#c2b3b3', n: 0 }
-    ];
-    s.perEvent.forEach(e => {
-      if (e.noEntry) return;
-      if (e.place <= 3) tiers[0].n++;
-      else if (e.place <= 10) tiers[1].n++;
-      else if (e.place <= 20) tiers[2].n++;
-      else tiers[3].n++;
-    });
-    return tiers;
-  }
-
-  function donutSVG(tiers, total) {
-    const R = 64, C = 2 * Math.PI * R;
-    let offset = 0;
-    const segs = tiers.filter(t => t.n > 0).map(t => {
-      const frac = total ? t.n / total : 0;
-      const len = frac * C;
-      const seg = `<circle cx="84" cy="84" r="${R}" fill="none" stroke="${t.color}" stroke-width="22"
-        stroke-dasharray="0 ${C}" data-len="${len.toFixed(2)}" data-gap="${(C - len).toFixed(2)}"
-        stroke-dashoffset="${(-offset).toFixed(2)}" transform="rotate(-90 84 84)"></circle>`;
-      offset += len;
-      return seg;
-    }).join('');
-    return `<svg class="donut-svg" viewBox="0 0 168 168">
-      <circle cx="84" cy="84" r="${R}" fill="none" stroke="var(--fx-track)" stroke-width="22"></circle>
-      ${segs}
-      <text class="donut-center-num" x="84" y="82" text-anchor="middle">${total}</text>
-      <text class="donut-center-lbl" x="84" y="100" text-anchor="middle">Events Entered</text>
-    </svg>`;
-  }
-
-  function renderAnalytics() {
-    const view = document.getElementById('view-analytics');
-    if (!view) return;
-    const { stats, label, teams } = scopeStats();
-    const cats = categoryStats(stats);
-    const tiers = distribution(stats);
-
-    const catRow = (key, name, val) => {
-      const w = val == null ? 0 : ((33 - val) / 32) * 100;
-      return `<div class="cat-bar">
-        <div class="cat-bar-head"><span>${name}</span><span class="cat-avg">${val == null ? '—' : ord(Math.round(val)) + ' avg'}</span></div>
-        <div class="cat-bar-track"><div class="cat-bar-fill cat-${key}" data-w="${w.toFixed(1)}"></div></div>
-      </div>`;
-    };
-
-    // Leaderboard — best finishes across scope
-    const lb = stats.perEvent.filter(e => !e.noEntry).sort((a, b) => a.place - b.place).slice(0, 6);
-    const lbHTML = lb.map((e, i) => `
-      <div class="lb-item medal-${e.place <= 3 ? e.place : 0}">
-        <div class="lb-rank">${i + 1}</div>
-        <div class="lb-ico">${e.icon}</div>
-        <div class="lb-name">${esc(e.name)}</div>
-        <div><span class="lb-place">${ord(e.place)}</span> <span class="lb-team">/ 32</span></div>
-      </div>`).join('');
-
-    const perfHTML = teams.length === 1
-      ? perfBars(teams[0].s, teams[0].key)
-      : teams.map(t => `<div class="perf-team-divider">Team ${t.key}</div>${perfBars(t.s, t.key)}`).join('');
-
-    view.innerHTML = `
-      <div class="section-title reveal">2026 Regional Analytics</div>
-      <div class="section-subtitle reveal">A data view of Riverdale's NYC North Regional — medals, placements, and category strength. ${label} shown.</div>
-
-      <div class="analytics-toggle-row reveal">
-        <div class="team-toggle">
-          <button class="team-toggle-btn${analyticsTeam === 'A' ? ' active' : ''}" data-team="A">Team A</button>
-          <button class="team-toggle-btn${analyticsTeam === 'B' ? ' active' : ''}" data-team="B">Team B</button>
-          <button class="team-toggle-btn${analyticsTeam === 'both' ? ' active' : ''}" data-team="both">Both</button>
-        </div>
-      </div>
-
-      <div class="kpi-row reveal">
-        <div class="kpi-card gold"><div class="kpi-ico">🥇</div><div class="kpi-value" data-count="${stats.medals}">0</div><div class="kpi-label">Top-3 Medals</div></div>
-        <div class="kpi-card"><div class="kpi-ico">🏅</div><div class="kpi-value" data-count="${stats.top10}">0</div><div class="kpi-label">Top-10 Finishes</div></div>
-        <div class="kpi-card"><div class="kpi-ico">🎯</div><div class="kpi-value">${stats.best == null ? '—' : ord(stats.best)}</div><div class="kpi-label">Best Finish</div></div>
-        <div class="kpi-card"><div class="kpi-ico">📊</div><div class="kpi-value">${stats.avg ? stats.avg.toFixed(1) : '—'}</div><div class="kpi-label">Avg Placement</div></div>
-        <div class="kpi-card"><div class="kpi-ico">✅</div><div class="kpi-value" data-count="${stats.entered}">0</div><div class="kpi-label">Events Entered</div></div>
-      </div>
-
-      <div class="analytics-grid">
-        <div class="analytics-panel wide reveal">
-          <h3>Placement by Event</h3>
-          <div class="panel-sub">Longer bars are better finishes (1st = full bar). Out of 32 teams.</div>
-          ${perfHTML}
-          <div class="perf-legend">
-            <span><i style="background:#d9af3e"></i> Medal (Top 3)</span>
-            <span><i style="background:#8B1A1A"></i> Top 10</span>
-            <span><i style="background:#a9696b"></i> 11–20</span>
-            <span><i style="background:#c2b3b3"></i> 21–32</span>
-          </div>
-        </div>
-
-        <div class="analytics-panel reveal">
-          <h3>Strength by Category</h3>
-          <div class="panel-sub">Average placement in each event type.</div>
-          ${catRow('study', '📖 Study', cats.study)}
-          ${catRow('build', '🔧 Build', cats.build)}
-          ${catRow('lab', '🧪 Lab / Hybrid', cats.lab)}
-          <div class="analytics-note">Lower average placement = stronger. Bars scaled so longer is better.</div>
-        </div>
-
-        <div class="analytics-panel reveal">
-          <h3>Finish Distribution</h3>
-          <div class="panel-sub">Where ${label.toLowerCase()} landed across all entered events.</div>
-          <div class="donut-wrap">
-            ${donutSVG(tiers, stats.entered)}
-            <div class="donut-legend">
-              ${tiers.map(t => `<div class="donut-legend-item"><i style="background:${t.color}"></i>${t.label}<b>${t.n}</b></div>`).join('')}
-            </div>
-          </div>
-        </div>
-
-        <div class="analytics-panel wide reveal">
-          <h3>🏆 Best Results</h3>
-          <div class="panel-sub">Top finishes for ${label.toLowerCase()} at the 2026 Regional.</div>
-          ${lbHTML || '<div class="analytics-note">No entered events in this scope.</div>'}
-        </div>
-      </div>`;
-
-    // wire toggle
-    view.querySelectorAll('.team-toggle-btn').forEach(btn => {
-      btn.addEventListener('click', () => { analyticsTeam = btn.dataset.team; renderAnalytics(); });
-    });
-
-    if (window.initScrollAnimations) window.initScrollAnimations();
-    animateAnalytics(view);
-
-    // First-visit celebration for the Hovercraft gold
-    if (!analyticsCelebrated && stats.medals > 0) {
-      analyticsCelebrated = true;
-      setTimeout(() => { confetti(window.innerWidth / 2, window.innerHeight / 3, 120); toast('🥇 Hovercraft — 1st place at Regionals!'); }, 600);
-    }
-  }
-
-  function animateAnalytics(view) {
-    requestAnimationFrame(() => setTimeout(() => {
-      view.querySelectorAll('.perf-bar-fill').forEach(f => { f.style.width = (f.dataset.w || 0) + '%'; });
-      view.querySelectorAll('.cat-bar-fill').forEach(f => { f.style.width = (f.dataset.w || 0) + '%'; });
-      view.querySelectorAll('.donut-svg circle[data-len]').forEach(c => {
-        c.setAttribute('stroke-dasharray', `${c.dataset.len} ${c.dataset.gap}`);
-      });
-      view.querySelectorAll('.kpi-value[data-count]').forEach(el => countUp(el, +el.dataset.count));
-    }, 120));
-  }
-  function countUp(el, target) {
-    if (reduceMotion || !target) { el.textContent = target; return; }
-    const dur = 900, start = performance.now();
-    function frame(t) {
-      const p = Math.min(1, (t - start) / dur);
-      el.textContent = Math.round((1 - Math.pow(1 - p, 3)) * target);
-      if (p < 1) requestAnimationFrame(frame);
-    }
-    requestAnimationFrame(frame);
-  }
-
   /* ===================================================================
      STUDY HUB
      =================================================================== */
@@ -995,7 +735,7 @@
     const st = timerStats();
     const R = 104, C = 2 * Math.PI * R;
     host.innerHTML = `
-      <div class="analytics-panel" style="max-width:760px">
+      <div class="study-timer-panel" style="max-width:760px">
         <div class="timer-wrap">
           <div class="timer-ring-box">
             <svg viewBox="0 0 240 240">
@@ -1141,7 +881,6 @@
     if (typeof orig !== 'function') return;
     window.showView = function (name, tabEl) {
       orig(name, tabEl);
-      if (name === 'analytics') renderAnalytics();
       if (name === 'studyhub') initStudyHub();
       if (name === 'home') renderSeason();
     };

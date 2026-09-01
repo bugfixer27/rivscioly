@@ -53,12 +53,10 @@
     <div class="nav-tab" onclick="showView('newcomer', this)">New Members</div>
     <div class="nav-tab" onclick="showView('events', this)">Events</div>
     <div class="nav-tab" onclick="showView('regional', this)">Results</div>
-    <div class="nav-tab" onclick="showView('analytics', this)">Analytics</div>
     <div class="nav-tab" onclick="showView('roster', this)">Team</div>
     <div class="nav-tab" onclick="showView('resources', this)">Resources</div>
     <div class="nav-tab" onclick="showView('studyhub', this)">Study Hub</div>
     <div class="nav-tab" onclick="showView('ai', this)">SciOly AI</div>
-    <div class="nav-tab" onclick="showView('schedule', this)">Schedule</div>
     <div class="nav-tab" onclick="showView('request', this)">Request</div>
     <div class="nav-tab" onclick="showView('leaders', this)">Leaders</div>
     <div class="nav-tab" onclick="showView('contact', this)">Contact</div>
@@ -114,7 +112,7 @@
       <h3>Quick-Start Tips</h3>
       <div class="tip-grid">
         <div class="tip-item"><span class="tip-icon">📖</span><span>Use the Events tab to find your event and access the soinc.org rules and scioly.org wiki.</span></div>
-        <div class="tip-item"><span class="tip-icon">🗓️</span><span>Check the Schedule tab for tournament dates. Bronx Science Regional is the first milestone.</span></div>
+        <div class="tip-item"><span class="tip-icon">🗓️</span><span>Check the season countdowns on Home for upcoming tournament milestones.</span></div>
         <div class="tip-item"><span class="tip-icon">🧪</span><span>Build events require early start — coordinate with your partner and club leaders well in advance.</span></div>
         <div class="tip-item"><span class="tip-icon">💬</span><span>Use the <strong>Contact</strong> tab to reach leaders Florian, Rohan, or Luke, or advisor Ms. Monti.</span></div>
         <div class="tip-item"><span class="tip-icon">🎯</span><span>Study events reward consistency. Set a weekly study schedule and stick to it.</span></div>
@@ -311,79 +309,8 @@
     </div>
   </div>
 
-  <!-- ANALYTICS VIEW (rendered by features.js) -->
-  <div id="view-analytics" class="view"></div>
-
   <!-- STUDY HUB VIEW (rendered by features.js) -->
   <div id="view-studyhub" class="view"></div>
-
-  <!-- SCHEDULE VIEW -->
-  <div id="view-schedule" class="view">
-    <div class="section-title reveal">Competition Calendar</div>
-    <div class="section-subtitle reveal">Key dates for the 2025–2026 Science Olympiad season.</div>
-
-    <div class="schedule-card reveal">
-      <h3>📅 2025–2026 Season Timeline</h3>
-      <div class="timeline">
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <div class="timeline-date">Fall 2025</div>
-          <div class="timeline-content"><strong>Season Kickoff & Event Assignments.</strong> Club meetings begin. Leaders assign events and teams start building/studying.</div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <div class="timeline-date">Nov–Dec 2025</div>
-          <div class="timeline-content"><strong>Early Invitationals.</strong> Online invitationals (MIT Scioly, Solon, etc.) are great low-stakes practice opportunities. Check scioly.org/tournaments.</div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <div class="timeline-date">Jan 2026</div>
-          <div class="timeline-content"><strong>Intensive Prep.</strong> Build events should be fully assembled and tested. Study event binders and cheat sheets finalized.</div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <div class="timeline-date">Jan 24, 2026</div>
-          <div class="timeline-content"><strong>NYC North Regional Tournament</strong> at Bronx High School of Science. Riverdale placed 20th (Team A) and 31st (Team B).</div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <div class="timeline-date">Mar 2026</div>
-          <div class="timeline-content"><strong>NY State Tournament.</strong> Top regional finishers compete at the state level. Winners advance to Nationals.</div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <div class="timeline-date">May 2026</div>
-          <div class="timeline-content"><strong>National Tournament.</strong> The top teams from all 50 states compete. This is the ultimate goal — go Falcons!</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="schedule-card reveal">
-      <h3>📝 Study Milestones Checklist</h3>
-      <div class="timeline">
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <div class="timeline-date">Week 1–2</div>
-          <div class="timeline-content">Read your event's official rules fully. Visit the scioly.org wiki page for your event.</div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <div class="timeline-date">Week 3–6</div>
-          <div class="timeline-content">Work through practice tests from scioly.org/tests. Identify weak areas. For build events, begin prototyping.</div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <div class="timeline-date">Week 7–10</div>
-          <div class="timeline-content">Finalize your resource binder (for events that allow one). Build event devices tested 5+ times.</div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <div class="timeline-date">Final 2 Weeks</div>
-          <div class="timeline-content">Run full timed practice. Sleep well. Confirm logistics with team leaders.</div>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- PURCHASE REQUEST VIEW -->
   <div id="view-request" class="view">

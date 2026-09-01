@@ -46,7 +46,6 @@ A second styling/behavior layer (`assets/css/enhancements.css` + `assets/js/feat
 
 - **Command palette** — press `⌘K` / `Ctrl+K` (or `/`) to fuzzy-search every page, event, teammate, resource, and quick action, then jump there with the keyboard.
 - **Dark / light theme** — the floating moon/sun button (bottom-right) toggles a full dark theme. The choice is remembered per device and respects the system preference on first visit.
-- **Analytics tab** — an animated data view of the 2026 Regional: medal/Top-10 counts, best finish, average placement, a per-event placement chart (Team A / Team B / Both), category strength, a finish-distribution donut, and a best-results leaderboard. All computed live from the results data.
 - **Study Hub tab** — flip-card flashcards for all 23 events, a multiple-choice quiz, a Pomodoro focus timer that tracks sessions/minutes, and a season milestone checklist. Flashcards, quiz, timer stats, and milestones all run client-side; progress saves in the browser.
 - **SciOly AI tab** — sends a question to the team's Palantir Foundry-backed AI endpoint and displays its answer.
 - **Home "Your Season" panel** — pick your name to see your assigned events, prep progress, and live countdowns to the next season's milestones. Saved on the device only.
@@ -99,10 +98,10 @@ Replace that file with another browser-friendly image if the team photo changes.
 index.html                  Main GitHub Pages entry point
 sciolyedit.html             Redirect for the old file name
 assets/css/styles.css       Layout, colors, responsive behavior, transitions
-assets/css/enhancements.css Theme engine, command palette, analytics, study hub, dark mode
+assets/css/enhancements.css Theme engine, command palette, study hub, dark mode
 assets/js/data.js           Editable team/event/results data
 assets/js/app.js            Rendering, filters, modals, navigation, animations
-assets/js/features.js       Command palette, themes, analytics, study hub, personalization
+assets/js/features.js       Command palette, themes, study hub, personalization
 assets/images/              Local site images
 ```
 
