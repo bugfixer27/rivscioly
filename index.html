@@ -14,7 +14,7 @@
 <link rel="preload" href="assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low">
 <link rel="preload" href="assets/fonts/inter-tight.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low">
 <link rel="stylesheet" href="assets/css/styles.css">
-<link rel="stylesheet" href="assets/css/enhancements.css">
+<link rel="stylesheet" href="assets/css/enhancements.css?v=20260905">
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -141,7 +141,7 @@
         <button type="button" class="tip-item reveal" onclick="showView('studyhub', document.querySelector('.nav-tab[onclick*=studyhub]'))"><span class="tip-top"><span class="tip-number">02</span><span class="tip-arrow" aria-hidden="true">↗</span></span><strong>Book a 25-minute block</strong><span class="tip-copy">The Study Hub timer runs 25 or 50 minutes, logs every finished session on this device, and hands you a five-minute break.</span><span class="tip-action">Start the timer</span></button>
         <button type="button" class="tip-item reveal" onclick="showView('request', document.querySelector('.nav-tab[onclick*=request]'))"><span class="tip-top"><span class="tip-number">03</span><span class="tip-arrow" aria-hidden="true">↗</span></span><strong>Order balsa before November</strong><span class="tip-copy">Boomilever, Wright Stuff, and Mission Possible need materials in hand before invitational season opens on November 7. Requests go straight to the budget sheet.</span><span class="tip-action">File a request</span></button>
         <button type="button" class="tip-item reveal" onclick="showView('contact', document.querySelector('.nav-tab[onclick*=contact]'))"><span class="tip-top"><span class="tip-number">04</span><span class="tip-arrow" aria-hidden="true">↗</span></span><strong>Ask Florian, Rohan, or Luke</strong><span class="tip-copy">All three competed at Bronx Science in January, across eleven different events between them. Ms. Monti handles lab access and school logistics.</span><span class="tip-action">Get their emails</span></button>
-        <button type="button" class="tip-item reveal" onclick="showView('studyhub', document.querySelector('.nav-tab[onclick*=studyhub]'))"><span class="tip-top"><span class="tip-number">05</span><span class="tip-arrow" aria-hidden="true">↗</span></span><strong>Flip the 24 flashcards</strong><span class="tip-copy">One card per event on the slate, overview and tips on the back, with an eight-question quiz drawn from the same set.</span><span class="tip-action">Open flashcards</span></button>
+        <button type="button" class="tip-item reveal" onclick="showView('studyhub', document.querySelector('.nav-tab[onclick*=studyhub]'))"><span class="tip-top"><span class="tip-number">05</span><span class="tip-arrow" aria-hidden="true">↗</span></span><strong>Try the eight-question quiz</strong><span class="tip-copy">Test your knowledge of the events on the slate with eight questions drawn from their overviews.</span><span class="tip-action">Open the quiz</span></button>
         <button type="button" class="tip-item reveal" onclick="showView('regional', document.querySelector('.nav-tab[onclick*=regional]'))"><span class="tip-top"><span class="tip-number">06</span><span class="tip-arrow" aria-hidden="true">↗</span></span><strong>Read the 2026 scorebook</strong><span class="tip-copy">Where Team A placed 4th in Dynamic Planet and Experimental Design, and the four events that went unstaffed. Every card opens the top five.</span><span class="tip-action">Open the results</span></button>
       </div>
     </section>
@@ -169,7 +169,7 @@
 
     <div class="info-card gold-border reveal" data-chapter="02">
       <h3>🏫 How Our Club Works</h3>
-      <p>The club is student-led by our three leaders, <strong>Florian Kroker-McCormack</strong>, <strong>Rohan Varia</strong>, and <strong>Luke Orlowski</strong>, with faculty support from <strong>Ms. Monti</strong>. Here is how a season runs:</p>
+      <p>The club is student-led by our three leaders, <strong>Florian Kroker-McCormack</strong>, <strong>Rohan Varia</strong>, and <strong>Luke Orlowski</strong>, with faculty support from <strong>Ms. Monti</strong> and <strong>Mr. Ahmed</strong>. Here is how a season runs:</p>
       <ul>
         <li><strong>Club periods:</strong> Regular meeting times at school where leaders coordinate preparation, answer questions, and track progress.</li>
         <li><strong>Event assignments:</strong> Early in the fall, leaders assign each member to 2–3 events based on interest and team needs. Most events are pairs; Codebusters and Experimental Design take three.</li>
@@ -613,7 +613,7 @@
   <div id="view-contact" class="view">
     <header class="view-head">
       <div class="section-title reveal">Contact Leaders &amp; Advisors</div>
-      <div class="section-subtitle reveal">Three student leaders and one faculty advisor. Email is the fastest way to reach any of them.</div>
+      <div class="section-subtitle reveal">Three student leaders and two faculty advisors. Email is the fastest way to reach any of them.</div>
     </header>
 
     <div class="contact-grid stagger-children">
@@ -638,8 +638,14 @@
       <div class="contact-card reveal" style="--i:3">
         <div class="contact-avatar">LM</div>
         <div class="contact-body"><h3>Ms. Monti</h3>
-        <div class="contact-role">Faculty Advisor · Lab access, travel, and school logistics</div></div>
+        <div class="contact-role">Faculty Advisor · Biology teacher with a background in entomology. Lab access, travel, and school logistics.</div></div>
         <a class="contact-email-btn u-link" href="mailto:lmonti@riverdale.edu">lmonti@riverdale.edu</a>
+      </div>
+      <div class="contact-card reveal" style="--i:4">
+        <div class="contact-avatar">FA</div>
+        <div class="contact-body"><h3>Mr. Ahmed</h3>
+        <div class="contact-role">Faculty Advisor · Club-period support. Biology teacher with experience in chemistry and neuroscience.</div></div>
+        <a class="contact-email-btn u-link" href="mailto:fahmed@riverdale.edu">fahmed@riverdale.edu</a>
       </div>
     </div>
 
@@ -760,7 +766,7 @@
      Order is preserved (async=false): GSAP → ScrollTrigger → Lenis → data → catalog → app → features. -->
 <script>
 (function () {
-  var files = ["https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/gsap.min.js", "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/ScrollTrigger.min.js", "assets/vendor/lenis.min.js", "assets/js/data.js", "assets/js/events-2027.js", "assets/js/app.js", "assets/js/features.js"];
+  var files = ["https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/gsap.min.js", "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/ScrollTrigger.min.js", "assets/vendor/lenis.min.js", "assets/js/data.js", "assets/js/events-2027.js", "assets/js/app.js", "assets/js/features.js?v=20260905"];
   var started = false;
   function start() {
     if (started) return;

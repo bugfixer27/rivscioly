@@ -151,7 +151,7 @@
     { view: 'regional', title: 'Results', sub: '2026 NYC North Regional scorebook', icon: '🏅' },
     { view: 'roster', title: 'Team', sub: 'Roster & event assignments', icon: '👥' },
     { view: 'resources', title: 'Resources', sub: 'Study links & tools', icon: '🌐' },
-    { view: 'studyhub', title: 'Study Hub', sub: 'Flashcards, quiz, focus timer', icon: '🧠' },
+    { view: 'studyhub', title: 'Study Hub', sub: 'Quiz, focus timer, milestones', icon: '🧠' },
     { view: 'ai', title: 'SciOly AI', sub: 'Ask the team AI a question', icon: '✨' },
     { view: 'request', title: 'Request', sub: 'Submit a purchase request', icon: '🛒' },
     { view: 'leaders', title: 'Leaders', sub: 'Protected dashboard', icon: '🔒' },
@@ -485,17 +485,16 @@
   /* ===================================================================
      STUDY HUB
      =================================================================== */
-  let studyTab = 'flashcards';
-  let flashList = [], flashIndex = 0, flashFlipped = false, flashMode = 'study';
+  let studyTab = 'quiz';
   let quizState = null;
   // Timer state (module-level so it survives view switches)
   let timer = { total: 25 * 60, left: 25 * 60, running: false, phase: 'Focus', preset: 25, interval: null };
 
   function setStudyTab(tab) {
+    if (!['quiz', 'timer', 'milestones'].includes(tab)) tab = 'quiz';
     studyTab = tab;
     document.querySelectorAll('.studyhub-subnav button').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
     document.querySelectorAll('.studyhub-section').forEach(s => s.classList.toggle('active', s.dataset.tab === tab));
-    if (tab === 'flashcards') renderFlashcards();
     if (tab === 'quiz') startQuiz();
     if (tab === 'timer') renderTimer();
     if (tab === 'milestones') renderMilestones();
@@ -509,16 +508,14 @@
     view.innerHTML = `
       <header class="view-head">
         <div class="section-title reveal">Study Hub</div>
-        <div class="section-subtitle reveal">Flashcards for all 24 events on the slate, an eight-question quiz drawn from the same cards, a 25- or 50-minute focus timer, and the eight season milestones. Progress saves on this device.</div>
+        <div class="section-subtitle reveal">An eight-question event quiz, a 25- or 50-minute focus timer, and the eight season milestones. Progress saves on this device.</div>
       </header>
       <div class="studyhub-subnav reveal">
-        <button data-tab="flashcards" class="active">🃏 Flashcards</button>
-        <button data-tab="quiz">❓ Quiz</button>
+        <button data-tab="quiz" class="active">❓ Quiz</button>
         <button data-tab="timer">⏱️ Focus Timer</button>
         <button data-tab="milestones">✅ Milestones</button>
       </div>
-      <div class="studyhub-section active" data-tab="flashcards"></div>
-      <div class="studyhub-section" data-tab="quiz"></div>
+      <div class="studyhub-section active" data-tab="quiz"></div>
       <div class="studyhub-section" data-tab="timer"></div>
       <div class="studyhub-section" data-tab="milestones"></div>`;
     view.querySelectorAll('.studyhub-subnav button').forEach(b => {
@@ -528,84 +525,7 @@
     setStudyTab(studyTab);
   }
 
-  // ---- Flashcards ----
   function stripHTML(s) { const d = document.createElement('div'); d.innerHTML = s || ''; return d.textContent || ''; }
-  function buildFlashList(type) {
-    const all = window.EVENTS || [];
-    flashList = (type && type !== 'all') ? all.filter(e => e.type === type) : all.slice();
-    flashIndex = 0; flashFlipped = false;
-  }
-  function renderFlashcards() {
-    const host = document.querySelector('.studyhub-section[data-tab="flashcards"]');
-    if (!host) return;
-    if (!flashList.length) buildFlashList('all');
-    if (host.dataset.built !== '1') {
-      host.dataset.built = '1';
-      host.innerHTML = `
-        <div class="flash-controls">
-          <select id="flash-filter" aria-label="Filter events">
-            <option value="all">All events</option>
-            <option value="study">📖 Study</option>
-            <option value="build">🔧 Build</option>
-            <option value="lab">🧪 Lab / Hybrid</option>
-          </select>
-          <button class="flash-nav-btn" id="flash-shuffle">🔀 Shuffle</button>
-          <div class="flash-mode-toggle">
-            <button data-mode="study" class="active">Study</button>
-            <button data-mode="reveal">Quick facts</button>
-          </div>
-        </div>
-        <div class="flashcard-stage"><div class="flashcard" id="flashcard"></div></div>
-        <div class="flash-nav">
-          <button class="flash-nav-btn" id="flash-prev">← Prev</button>
-          <span class="flash-counter" id="flash-counter"></span>
-          <button class="flash-nav-btn" id="flash-next">Next →</button>
-        </div>`;
-      host.querySelector('#flash-filter').addEventListener('change', e => { buildFlashList(e.target.value); paintFlashcard(); });
-      host.querySelector('#flash-shuffle').addEventListener('click', () => {
-        for (let i = flashList.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0;[flashList[i], flashList[j]] = [flashList[j], flashList[i]]; }
-        flashIndex = 0; flashFlipped = false; paintFlashcard(); toast('🔀 Shuffled');
-      });
-      host.querySelector('#flash-prev').addEventListener('click', () => { flashIndex = (flashIndex - 1 + flashList.length) % flashList.length; flashFlipped = false; paintFlashcard(); });
-      host.querySelector('#flash-next').addEventListener('click', () => { flashIndex = (flashIndex + 1) % flashList.length; flashFlipped = false; paintFlashcard(); });
-      host.querySelectorAll('.flash-mode-toggle button').forEach(b => b.addEventListener('click', () => {
-        flashMode = b.dataset.mode;
-        host.querySelectorAll('.flash-mode-toggle button').forEach(x => x.classList.toggle('active', x === b));
-        flashFlipped = false; paintFlashcard();
-      }));
-    }
-    paintFlashcard();
-  }
-  function typeMeta(t) {
-    if (t === 'build') return { label: 'Build', bg: '#eaf7ed', col: '#1f6b35' };
-    if (t === 'lab') return { label: 'Lab / Hybrid', bg: '#edf4fa', col: '#255a8a' };
-    return { label: 'Study', bg: '#fff0ee', col: '#8b1a1a' };
-  }
-  function paintFlashcard() {
-    const card = document.getElementById('flashcard');
-    const counter = document.getElementById('flash-counter');
-    if (!card || !flashList.length) return;
-    const ev = flashList[flashIndex];
-    const tm = typeMeta(ev.type);
-    const backTitle = flashMode === 'reveal' ? 'Quick facts' : 'Overview';
-    const backBody = flashMode === 'reveal'
-      ? `<p>${esc(ev.shortDesc)}</p><div class="flash-tip">${ev.tips ? ev.tips : ''}</div>`
-      : `<p>${esc(ev.overview)}</p><div class="flash-tip">${ev.tips ? ev.tips : ''}</div>`;
-    card.innerHTML = `
-      <div class="flash-face flash-front">
-        <div class="flash-ico">${ev.icon}</div>
-        <div class="flash-name">${esc(ev.name)}</div>
-        <div class="flash-type" style="background:${tm.bg};color:${tm.col}">${tm.label}</div>
-        <div class="flash-hint">Tap to flip · ${flashMode === 'reveal' ? 'quick facts' : 'overview & tips'}</div>
-      </div>
-      <div class="flash-face flash-back">
-        <h4>${backTitle} — ${esc(ev.name)}</h4>
-        ${backBody}
-      </div>`;
-    card.classList.toggle('flipped', flashFlipped);
-    card.onclick = () => { flashFlipped = !flashFlipped; card.classList.toggle('flipped', flashFlipped); };
-    if (counter) counter.textContent = `${flashIndex + 1} / ${flashList.length}`;
-  }
 
   // ---- Quiz ----
   function startQuiz() {
@@ -647,7 +567,7 @@
     if (idx >= questions.length) {
       const pctScore = Math.round((score / questions.length) * 100);
       const emoji = pctScore >= 80 ? '🏆' : pctScore >= 50 ? '💪' : '📚';
-      const msg = pctScore >= 80 ? 'Outstanding — you know your events!' : pctScore >= 50 ? 'Solid. A little more review and you’re golden.' : 'Keep studying — flip through the flashcards!';
+      const msg = pctScore >= 80 ? 'Outstanding — you know your events!' : pctScore >= 50 ? 'Solid. A little more review and you’re golden.' : 'Keep studying — review the event overviews!';
       host.innerHTML = `
         <div class="quiz-card">
           <div class="quiz-result">
@@ -922,7 +842,7 @@
   let headlineHTML = null;
   let field = null;
   let ready = false;
-  let homeEngaged = false;
+  let layoutWidth = innerWidth;
   let skewTo = null;
 
   function motion() { return !reduce.matches && !!window.gsap; }
@@ -950,7 +870,10 @@
     gsap.registerEase('site.out', bezier(.16, 1, .3, 1));
     gsap.registerEase('site.inOut', bezier(.65, 0, .35, 1));
     gsap.defaults({ ease: 'site.out', duration: D2 });
-    if (window.ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
+    if (window.ScrollTrigger) {
+      gsap.registerPlugin(ScrollTrigger);
+      ScrollTrigger.config({ ignoreMobileResize: true });
+    }
   }
 
   /* ---- Opening title card (once per session; any click or key skips) ---- */
@@ -990,7 +913,7 @@
     const x = gsap.quickTo(el, 'x', { duration: D1, ease: 'site.out' });
     const y = gsap.quickTo(el, 'y', { duration: D1, ease: 'site.out' });
     gsap.set(el, { x: -100, y: -100 });
-    const RING = 'a, button, [role="button"], summary, label, select, .fx-palette-item, .milestone-item, .flashcard';
+    const RING = 'a, button, [role="button"], summary, label, select, .fx-palette-item, .milestone-item';
     const TEXT = 'input, textarea, [contenteditable="true"]';
     let shown = false;
     window.addEventListener('pointermove', e => {
@@ -1463,10 +1386,9 @@
     const view = document.querySelector('.view.active');
     if (!view) return;
     // The opaque opening shot hides the field; create it once a scene can show it.
-    if (view.id !== 'view-home' || homeEngaged) ensureField();
+    if (view.id !== 'view-home' || window.scrollY > 50) ensureField();
     if (!motion() || !window.ScrollTrigger) return;
     html.classList.add('cinema-live');
-    if (view.id === 'view-home' && !homeEngaged) return;
     context = gsap.context(() => {}, main);
     context.add(() => {
       if (view.id === 'view-home') homeScene();
@@ -1536,7 +1458,7 @@
     if (ticker && window.gsap) gsap.ticker.remove(ticker);
     if (lenis) lenis.destroy();
     lenis = null; ticker = null;
-    if (reduce.matches || !window.Lenis || !window.gsap || !window.ScrollTrigger) return;
+    if (reduce.matches || !fine.matches || innerWidth <= 800 || !window.Lenis || !window.gsap || !window.ScrollTrigger) return;
     lenis = new Lenis({
       duration: .85, smoothWheel: true, syncTouch: false,
       anchors: true,
@@ -1567,7 +1489,7 @@
     const step = Math.min(3, Math.floor(y / 180));
     if (step !== blurStep) { nav.style.setProperty('--nav-blur', (step * 4) + 'px'); blurStep = step; }
     const focused = nav.contains(document.activeElement);
-    nav.classList.toggle('nav-away', !reduce.matches && y > 300 && scrollVelocity > .6 && !focused && !overlayOpen());
+    nav.classList.toggle('nav-away', !reduce.matches && fine.matches && innerWidth > 800 && y > 300 && scrollVelocity > .6 && !focused && !overlayOpen());
     clearTimeout(navIdle);
     navIdle = setTimeout(() => { nav.classList.remove('nav-away'); if (skewTo) skewTo(0); }, 850);
   }
@@ -1835,18 +1757,9 @@ void main(){ vUv = aPos * .5 + .5; gl_Position = vec4(aPos, 0., 1.); }`;
     // Everything that reads layout or wires secondary interactions waits for the first paint.
     const later = () => { setupLenis(); setupModalMotion(); initNavIndicator(); initWipe(); initCursor(); initMagnetic(); };
     if ('requestIdleCallback' in window) requestIdleCallback(later, { timeout: 600 }); else setTimeout(later, 40);
-    // The opaque opening shot needs no pin until scrolling starts.
-    function engageHome(event) {
-      if (homeEngaged || !document.getElementById('view-home').classList.contains('active')) return;
-      if (event.type === 'keydown' && (!['PageDown', 'PageUp', 'ArrowDown', 'ArrowUp', 'End', ' '].includes(event.key) || event.target.closest('input, textarea, select'))) return;
-      homeEngaged = true;
-      refreshView();
-    }
-    window.addEventListener('wheel', engageHome, { passive: true });
-    window.addEventListener('touchstart', engageHome, { passive: true });
-    window.addEventListener('keydown', engageHome);
-    window.addEventListener('scroll', engageHome, { passive: true });
+    // Prepare pins before input; inserting a pin inside the first scroll caused a jump.
     window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) ensureField();
       if (!navFrame) navFrame = requestAnimationFrame(updateNav);
     }, { passive: true });
     nav.addEventListener('focusin', () => nav.classList.remove('nav-away'));
@@ -1857,8 +1770,13 @@ void main(){ vUv = aPos * .5 + .5; gl_Position = vec4(aPos, 0., 1.); }`;
     }).observe(document.body, { attributes: true, attributeFilter: ['style'] });
     document.querySelector('.roster-next')?.addEventListener('toggle', () => window.ScrollTrigger?.refresh());
     window.addEventListener('resize', () => {
+      // Mobile browser chrome and keyboards resize height repeatedly during a swipe.
+      // Keep existing pins/text intact; real width/orientation changes still rebuild.
+      const widthChanged = Math.abs(innerWidth - layoutWidth) > 1;
+      if (!widthChanged && (!fine.matches || innerWidth <= 800)) return;
+      layoutWidth = innerWidth;
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => { field?.resize(); refreshView(); }, 180);
+      resizeTimer = setTimeout(() => { setupLenis(); field?.resize(); refreshView(); }, 180);
     });
     reduce.addEventListener('change', () => { setupLenis(); field?.sync(); refreshView(); });
     refreshView();

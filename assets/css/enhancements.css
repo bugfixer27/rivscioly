@@ -2227,3 +2227,19 @@ html[data-intro] #fx-intro { animation: intro-retire 0s linear 2.4s forwards; }
    border-box hero (viewport minus the asymmetric padding) and writes it back inline, which
    shrank the hero to the text column the moment scrolling began. */
 #view-home > .pin-spacer > .home-hero { width: 100% !important; max-width: none !important; margin: 0 !important; }
+
+/* One card per row on phones and compact touch layouts. Keep internal card layouts intact. */
+@media (max-width: 800px) {
+  .events-grid, .results-grid, .results-stream, .roster-grid, .resources-grid,
+  .contact-grid, .tip-grid, .stats-row, .overall-standing, .season-countdowns,
+  .budget-summary-grid, .budget-workspace, .form-grid, .timer-stats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .result-comparison { flex-direction: column; }
+  .stat-card:nth-child(n), html[data-theme="dark"] .stat-card:nth-child(n) {
+    padding: 22px 0; border-right: 0; border-bottom: 1px solid var(--line-soft);
+  }
+  .standing-card:nth-child(n) { padding-left: 0; border-right: 0; }
+  .film-heading { flex-wrap: wrap; }
+  .home-hero .hero-photo-frame img { transition: none; }
+}
