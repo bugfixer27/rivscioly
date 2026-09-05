@@ -88,9 +88,9 @@ const STUDENT_PROFILES = {
 
 The home-page team photo is stored at:
 
-`assets/images/riverdale-team-2026.jpg`
+`assets/images/riverdale-team-2026.webp` (desktop) and `assets/images/riverdale-team-2026-mobile.webp` (under 720px)
 
-Replace that file with another browser-friendly image if the team photo changes. Keep the same filename if you do not want to edit HTML.
+Replace both WebP files if the team photo changes. Keep the same filenames if you do not want to edit HTML.
 
 ## File Structure
 

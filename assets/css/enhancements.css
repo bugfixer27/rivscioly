@@ -2223,3 +2223,7 @@ html[data-intro] #fx-intro { animation: intro-retire 0s linear 2.4s forwards; }
   .podium-lg { width: 100%; height: 150px; gap: 8px; }
   .podium-school { font-size: .68rem; padding-bottom: 6px; }
 }
+/* Pinned hero keeps its full-bleed width. ScrollTrigger measures the content width of the
+   border-box hero (viewport minus the asymmetric padding) and writes it back inline, which
+   shrank the hero to the text column the moment scrolling began. */
+#view-home > .pin-spacer > .home-hero { width: 100% !important; max-width: none !important; margin: 0 !important; }
