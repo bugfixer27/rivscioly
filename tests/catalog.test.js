@@ -22,10 +22,10 @@ test('new catalog contains the exact 24 requested events with unique IDs', () =>
   assert.deepEqual(Array.from(context.catalog, e => e.name), expected);
   assert.equal(new Set(context.catalog.map(e => e.id)).size, 24);
 });
-test('all 23 Drive references are linked and Code Craze is a sourced trial', () => {
-  const refs = context.catalog.filter(e => new URL(e.referenceUrl).hostname === 'drive.google.com');
-  assert.equal(refs.length, 23);
-  assert.equal(new Set(refs.map(e => e.referenceUrl)).size, 23);
+test('internal event documents are not exposed and Code Craze keeps its public trial link', () => {
+  assert(context.catalog.filter(e => e.name !== 'Code Craze').every(e => !e.referenceUrl));
+  const page = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  assert(!/href=["'][^"']*(?:drive\.google\.com|\.md(?:[?#"']))/i.test(page));
   const trial = context.catalog.find(e => e.name === 'Code Craze');
   assert.equal(trial.status, 'Featured trial');
   assert.equal(new URL(trial.referenceUrl).hostname, 'www.soinc.org');

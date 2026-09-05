@@ -17,7 +17,6 @@ const CURRENT_EVENTS = [
       "Practice diagram, model, and station-based identification."
     ],
     "tips": "Practice system diagrams and application questions. The source warns that printed draft rules contain errors; verify final content and reference-sheet limits.",
-    "referenceUrl": "https://drive.google.com/file/d/1O6nlyt4Gggoi8-aEPbUrF_KQVrsA8gRm/view?usp=drivesdk",
     "soincSlug": "events/div-c",
     "wikiSlug": "Anatomy_and_Physiology"
   },
@@ -37,7 +36,6 @@ const CURRENT_EVENTS = [
       "Use orbital mechanics and distance relationships to analyze astronomical data."
     ],
     "tips": "Build an organized object guide and practice distance calculations using real data.",
-    "referenceUrl": "https://drive.google.com/file/d/1cx5nV9quRJxjkVUzZqmp2Mh66aA7aw29/view?usp=drivesdk",
     "soincSlug": "events/div-c",
     "wikiSlug": "Astronomy"
   },
@@ -57,7 +55,6 @@ const CURRENT_EVENTS = [
       "Use repeated builds to test one design variable at a time."
     ],
     "tips": "Log structure mass, supported load, and failure mode. Draft bonus and tiebreaker changes remain unconfirmed.",
-    "referenceUrl": "https://drive.google.com/file/d/1wlqe6qMM71nu9yHeNE7fEzo3rZpV6Fcg/view?usp=drivesdk",
     "soincSlug": "events/div-c",
     "wikiSlug": "Boomilever"
   },
@@ -77,7 +74,6 @@ const CURRENT_EVENTS = [
       "Division C topics include plant biochemistry and applications in medicine and environmental management."
     ],
     "tips": "Organize notes by plant structures and processes. The reference set is introductory; confirm the final topic list.",
-    "referenceUrl": "https://drive.google.com/file/d/1tbZHa_DFI_DTsxqVHjfmRHPNPp6jW6VE/view?usp=drivesdk",
     "soincSlug": "events/div-c",
     "wikiSlug": "Botany"
   },
@@ -97,7 +93,6 @@ const CURRENT_EVENTS = [
       "Combine hands-on measurements with written explanations and safe lab practice."
     ],
     "tips": "Practice gas laws, reaction rates, graph interpretation, and safe laboratory technique.",
-    "referenceUrl": "https://drive.google.com/file/d/1u7_JJrPFzenw7kYSbxV7mvHs6bqBMWWJ/view?usp=drivesdk",
     "soincSlug": "events/div-c",
     "wikiSlug": "Chemistry_Lab"
   },
@@ -117,7 +112,6 @@ const CURRENT_EVENTS = [
       "Build circuits to given specifications and compare predictions with measurements."
     ],
     "tips": "Practice using a multimeter and predicting circuit behavior before measuring it.",
-    "referenceUrl": "https://drive.google.com/file/d/1Dpq_zMyinbTevjrYPWj-hKrFZ-eGNFWq/view?usp=drivesdk",
     "soincSlug": "events/div-c",
     "wikiSlug": "Circuit_Lab"
   },
@@ -137,7 +131,6 @@ const CURRENT_EVENTS = [
       "Practice timed decoding and dividing questions among teammates."
     ],
     "tips": "Practice dividing a test among partners. Calculator policy and Hill cipher coverage conflict in the draft references; confirm both.",
-    "referenceUrl": "https://drive.google.com/file/d/1bUbQFyJhSHWD-gAo67Y_VpIzPEjq9SYs/view?usp=drivesdk",
     "soincSlug": "events/div-c",
     "wikiSlug": "Codebusters"
   },
@@ -157,7 +150,6 @@ const CURRENT_EVENTS = [
       "Gene modification technology and techniques."
     ],
     "tips": "Practice genetics problems and data interpretation. The source is missing text from its detailed topic slides.",
-    "referenceUrl": "https://drive.google.com/file/d/19Wb1MfixSMCpTG_-KK7UdubDzy6ZmocZ/view?usp=drivesdk",
     "soincSlug": "events/div-c",
     "wikiSlug": "Designer_Genes"
   },
@@ -177,7 +169,6 @@ const CURRENT_EVENTS = [
       "Connect investigation findings to public-health decisions."
     ],
     "tips": "Practice outbreak investigations, study designs, and explaining conclusions from evidence.",
-    "referenceUrl": "https://drive.google.com/file/d/1Zfywj1Fx5zcYMMj-9kLmXNLVgnxEDWJv/view?usp=drivesdk",
     "soincSlug": "events/div-c",
     "wikiSlug": "Disease_Detectives"
   },
@@ -197,7 +188,6 @@ const CURRENT_EVENTS = [
       "Interpret maps, graphs, and geologic evidence."
     ],
     "tips": "Interpret maps and hydrology data. Keep the focus on water movement and geology.",
-    "referenceUrl": "https://drive.google.com/file/d/1o7sKL99OZl5vriHt0FUWHnWMTUYR2VCu/view?usp=drivesdk",
     "soincSlug": "events/div-c",
     "wikiSlug": "Dynamic_Planet"
   },
@@ -217,7 +207,6 @@ const CURRENT_EVENTS = [
       "Draft format includes pushing a weighted bottle toward a target line."
     ],
     "tips": "Record repeated runs and analyze stopping error. Verify final dimensions and task requirements before building.",
-    "referenceUrl": "https://drive.google.com/file/d/1UleSemtQOPUff1SGruvIckzJczBKtkgv/view?usp=drivesdk",
     "soincSlug": "events/div-c",
     "wikiSlug": "Electric_Vehicle"
   },
@@ -237,7 +226,6 @@ const CURRENT_EVENTS = [
       "Coordinate with a partner to assemble the modeled parts."
     ],
     "tips": "Practice sketch constraints and assemblies. Draft part-count requirements conflict, so confirm the final numbers.",
-    "referenceUrl": "https://drive.google.com/file/d/1dgj0m7Sgfb7uCSw4SZfypTlMXhOMuaE3/view?usp=drivesdk",
     "soincSlug": "events/div-c",
     "wikiSlug": "Engineering_CAD"
   },
@@ -257,7 +245,6 @@ const CURRENT_EVENTS = [
       "Analyze results and produce a rubric-based written report."
     ],
     "tips": "Practice dividing responsibilities, collecting multiple trials, and writing a clear, rubric-based report.",
-    "referenceUrl": "https://drive.google.com/file/d/1UCmdd-P4QHt5nB6QSAn80VUqbuKBrrvX/view?usp=drivesdk",
     "soincSlug": "events/div-c",
     "wikiSlug": "Experimental_Design"
   },
@@ -277,7 +264,6 @@ const CURRENT_EVENTS = [
       "Connect the evidence to a supported conclusion about suspects."
     ],
     "tips": "Practice chromatography and evidence analysis. Keep each mock case’s data together rather than mixing source values.",
-    "referenceUrl": "https://drive.google.com/file/d/1dP51gbCQw3GMR0-U2xqa0eTvR6xceC6X/view?usp=drivesdk",
     "soincSlug": "events/div-c",
     "wikiSlug": "Forensics"
   },
@@ -297,7 +283,6 @@ const CURRENT_EVENTS = [
       "Calibrate travel to target-time and distance objectives."
     ],
     "tips": "Compare lift, thrust, and ballast through repeatable tests and a calibration log.",
-    "referenceUrl": "https://drive.google.com/file/d/1ydFvk453xYNKBl9lRjvZWCYu8Jt4VlhQ/view?usp=drivesdk",
     "soincSlug": "events/div-c",
     "wikiSlug": "Hovercraft"
   },
@@ -317,7 +302,6 @@ const CURRENT_EVENTS = [
       "Document and test the reliability of the complete sequence."
     ],
     "tips": "Test each action independently, then track reliability across complete runs. Confirm final allowed actions.",
-    "referenceUrl": "https://drive.google.com/file/d/1zbhBIpCJ8NDcH7sc058sqXvwazy1kJmV/view?usp=drivesdk",
     "soincSlug": "events/div-c",
     "wikiSlug": "Mission_Possible"
   },
@@ -337,7 +321,6 @@ const CURRENT_EVENTS = [
       "Use launch logs to compare pressure and parachute configurations."
     ],
     "tips": "Log launches and compare parachute designs, stability, and time aloft. Verify final construction and eye-protection rules.",
-    "referenceUrl": "https://drive.google.com/file/d/1hT7ROYp8Vp1fs4zv7qoTFz5kpQU9_d-h/view?usp=drivesdk",
     "soincSlug": "events/div-c",
     "wikiSlug": "Ping_Pong_Parachute"
   },
@@ -357,7 +340,6 @@ const CURRENT_EVENTS = [
       "Construct and explain a physical protein model."
     ],
     "tips": "The draft assignment is hemagglutinin, PDB 3UBE. Zinc-finger examples teach technique; they are not the assigned protein. Confirm the final structure.",
-    "referenceUrl": "https://drive.google.com/file/d/1cc7vFqwqAy-MlG5D71h2HXziZrBd8lnO/view?usp=drivesdk",
     "soincSlug": "events/div-c",
     "wikiSlug": "Protein_Modeling"
   },
@@ -377,7 +359,6 @@ const CURRENT_EVENTS = [
       "Connect climate processes with Earth’s energy balance."
     ],
     "tips": "Practice interpreting bands and maps. Confirm allowed calculator and measurement-tool quantities.",
-    "referenceUrl": "https://drive.google.com/file/d/1zgBpKnNi1UD36ZCE935MnByOamXCFVHn/view?usp=drivesdk",
     "soincSlug": "events/div-c",
     "wikiSlug": "Remote_Sensing"
   },
@@ -397,7 +378,6 @@ const CURRENT_EVENTS = [
       "Understand resource uses and economic significance."
     ],
     "tips": "Practice identification with multiple properties, not color alone. Verify the current specimen list and calculator allowance.",
-    "referenceUrl": "https://drive.google.com/file/d/1OV-hG7uooSod530ZXZX_6BB83_yDyiL0/view?usp=drivesdk",
     "soincSlug": "events/div-c",
     "wikiSlug": "Rocks_and_Minerals"
   },
@@ -417,7 +397,6 @@ const CURRENT_EVENTS = [
       "Pair theory with device testing; confirm the heat-collector task against final rules."
     ],
     "tips": "Study conduction, convection, radiation, and thermodynamic laws. Draft sources conflict about the device task; verify before construction.",
-    "referenceUrl": "https://drive.google.com/file/d/1NeMrvFSV_2yQvdm2TCfq4JfUswAnvTdq/view?usp=drivesdk",
     "soincSlug": "events/div-c",
     "wikiSlug": "Thermodynamics"
   },
@@ -437,7 +416,6 @@ const CURRENT_EVENTS = [
       "Build and calibrate a salinometer or hydrometer."
     ],
     "tips": "Practice reading water-quality data and calibrating a salinometer. Confirm the final equipment requirements.",
-    "referenceUrl": "https://drive.google.com/file/d/1TqQhLdDQQAfM_dxPzBnOWTQG5APXVP7l/view?usp=drivesdk",
     "soincSlug": "events/div-c",
     "wikiSlug": "Water_Quality"
   },
@@ -457,7 +435,6 @@ const CURRENT_EVENTS = [
       "Use flight logs to improve time aloft."
     ],
     "tips": "Log flight performance and adjust one variable at a time. Confirm final measurement-box dimensions.",
-    "referenceUrl": "https://drive.google.com/file/d/1RYITYKZcsSNJjNErkLNqbgpCXEiEMk1A/view?usp=drivesdk",
     "soincSlug": "events/div-c",
     "wikiSlug": "Wright_Stuff"
   },
