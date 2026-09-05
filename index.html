@@ -3,235 +3,283 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Riverdale Science Olympiad 2026</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<title>Riverdale Science Olympiad</title>
+<meta name="description" content="Riverdale Country School's Science Olympiad team: the 2026–27 event slate, 2026 NYC North Regional results, study tools, and purchase requests.">
+<meta name="theme-color" content="#801d32">
+<link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<script>try{document.documentElement.dataset.theme=localStorage.getItem("fx_theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");if(!sessionStorage.getItem("rcs_intro")&&!matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.dataset.intro="1"}}catch(e){}</script>
+<link rel="preload" as="image" href="assets/images/riverdale-team-2026-mobile.webp" type="image/webp" media="(max-width: 720px)" fetchpriority="high">
+<link rel="preload" as="image" href="assets/images/riverdale-team-2026.webp" type="image/webp" media="(min-width: 721px)" fetchpriority="high">
+<link rel="preload" href="assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low">
+<link rel="preload" href="assets/fonts/inter-tight.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low">
 <link rel="stylesheet" href="assets/css/styles.css">
 <link rel="stylesheet" href="assets/css/enhancements.css">
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to content</a>
 
-<!-- CINEMATIC PRELOADER -->
-<div id="fx-preloader">
-  <div class="fx-pre-crest">🦅</div>
-  <div>
-    <div class="fx-pre-title">Riverdale Science Olympiad</div>
-    <div class="fx-pre-sub">Loading your season hub…</div>
+<!-- OPENING TITLE CARD (once per session; any click skips) -->
+<div id="fx-intro" aria-hidden="true">
+  <div class="fx-intro-panel fx-intro-top"></div>
+  <div class="fx-intro-panel fx-intro-bottom"></div>
+  <div class="fx-intro-text">
+    <div class="fx-intro-year"><span id="fx-intro-count">2000</span><span class="fx-intro-dash">–27</span></div>
+    <div class="fx-intro-name">Riverdale Science Olympiad</div>
+    <div class="fx-intro-skip">Click anywhere to skip</div>
   </div>
-  <div class="fx-pre-bar"><span></span></div>
 </div>
+<script>
+/* The count-up starts immediately; the curtain (features.js) resumes from wherever it stands. */
+(function () {
+  var html = document.documentElement, count = document.getElementById("fx-intro-count"), dash = document.querySelector(".fx-intro-dash");
+  if (!count || !html.dataset.intro) return;
+  var t0 = performance.now();
+  function frame(t) {
+    var p = Math.min(1, (t - t0) / 500), e = 1 - Math.pow(1 - p, 4);
+    count.textContent = String(Math.round(2000 + 26 * e));
+    if (p >= 1 && dash) dash.style.opacity = "1";
+    if (p < 1 && html.dataset.intro) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
 
 <!-- SCROLL PROGRESS -->
 <div id="fx-progress"></div>
 
 <header id="live-header">
-  <div class="header-bg">
-    <div class="header-noise"></div>
-    <div class="header-grid"></div>
-    <div class="header-rings"></div>
-    <div class="header-scan"></div>
-    <div class="header-glow glow-1"></div>
-    <div class="header-glow glow-2"></div>
-    <div class="header-glow glow-3"></div>
-    <div class="header-comet comet-1"></div>
-    <div class="header-comet comet-2"></div>
-    <canvas id="header-particles"></canvas>
-  </div>
-
   <div class="header-inner">
-    <div class="school-crest">🦅</div>
+    <div class="school-crest" aria-hidden="true">R<span>SCIOLY</span></div>
     <div class="header-text">
       <h1>Riverdale Science Olympiad</h1>
       <div class="subtitle">Riverdale Country School · Division C</div>
-      <span class="year-badge">Season 2025–2026</span>
+      <span class="year-badge">2026–27 season</span>
     </div>
   </div>
 </header>
 
-<nav class="nav-bar">
+<nav class="nav-bar" aria-label="Main navigation">
   <div class="nav-inner">
-    <div class="nav-tab active" onclick="showView('home', this)">Home</div>
-    <div class="nav-tab" onclick="showView('newcomer', this)">New Members</div>
-    <div class="nav-tab" onclick="showView('events', this)">Events</div>
-    <div class="nav-tab" onclick="showView('regional', this)">Results</div>
-    <div class="nav-tab" onclick="showView('roster', this)">Team</div>
-    <div class="nav-tab" onclick="showView('resources', this)">Resources</div>
-    <div class="nav-tab" onclick="showView('studyhub', this)">Study Hub</div>
-    <div class="nav-tab" onclick="showView('ai', this)">SciOly AI</div>
-    <div class="nav-tab" onclick="showView('request', this)">Request</div>
-    <div class="nav-tab" onclick="showView('leaders', this)">Leaders</div>
-    <div class="nav-tab" onclick="showView('contact', this)">Contact</div>
+    <span class="nav-indicator" aria-hidden="true"></span>
+    <button type="button" class="nav-tab active" aria-current="page" onclick="showView('home', this)">Home</button>
+    <button type="button" class="nav-tab" onclick="showView('newcomer', this)">New Members</button>
+    <button type="button" class="nav-tab" onclick="showView('events', this)">Events</button>
+    <button type="button" class="nav-tab" onclick="showView('regional', this)">Results</button>
+    <button type="button" class="nav-tab" onclick="showView('roster', this)">Team</button>
+    <button type="button" class="nav-tab" onclick="showView('resources', this)">Resources</button>
+    <button type="button" class="nav-tab" onclick="showView('studyhub', this)">Study Hub</button>
+    <button type="button" class="nav-tab" onclick="showView('ai', this)">SciOly AI</button>
+    <button type="button" class="nav-tab" onclick="showView('request', this)">Request</button>
+    <button type="button" class="nav-tab" onclick="showView('leaders', this)">Leaders</button>
+    <button type="button" class="nav-tab" onclick="showView('contact', this)">Contact</button>
   </div>
 </nav>
 
-<div class="main-content">
+<canvas id="science-field" aria-hidden="true"></canvas>
+<main class="main-content" id="main-content" tabindex="-1">
 
   <!-- HOME VIEW -->
   <div id="view-home" class="view active">
-    <div class="home-hero reveal">
-      <div class="hero-eyebrow">Riverdale Country School · Division C</div>
-      <h2>Build sharper. Study deeper. Compete together.</h2>
-      <p>Everything the Riverdale Science Olympiad team needs for events, results, roster planning, purchase requests, and competition prep in one polished season hub.</p>
+    <section class="home-hero"><div class="hero-copy">
+      <div class="hero-eyebrow">Riverdale Country School · Division C · Bronx, NY</div>
+      <h2>Two teams at<br>Bronx Science.<br><em>One gold, in Hovercraft.</em></h2>
+      <p>The Science Olympiad team at Riverdale, run by Florian Kroker-McCormack, Rohan Varia, and Luke Orlowski. Twenty-three events entered at the 2026 NYC North Regional; twenty-four on the slate for 2026–27, Anatomy &amp; Physiology to Wright Stuff.</p>
       <div class="hero-actions">
-        <button type="button" onclick="showView('events', document.querySelector('.nav-tab[onclick*=events]'))">Explore Events</button>
-        <button type="button" onclick="showView('request', document.querySelector('.nav-tab[onclick*=request]'))">Request Materials</button>
+        <button type="button" onclick="showView('events', document.querySelector('.nav-tab[onclick*=events]'))">Open the 2026–27 slate</button>
+        <button type="button" onclick="showView('request', document.querySelector('.nav-tab[onclick*=request]'))">Request materials</button>
       </div>
     </div>
 
-    <div class="reveal hero-photo-frame shine-surface tilt-card">
-      <img src="assets/images/riverdale-team-2026.jpg"
-           alt="Riverdale Science Olympiad team at the 2026 NYC Regional Tournament"
+    <div class="hero-photo-frame">
+      <picture>
+        <source media="(max-width: 720px)" srcset="assets/images/riverdale-team-2026-mobile.webp" type="image/webp">
+        <source srcset="assets/images/riverdale-team-2026.webp" type="image/webp">
+        <img src="assets/images/riverdale-team-2026.jpg"
+           fetchpriority="high" decoding="async"
+           alt="Riverdale Science Olympiad team at the 2026 NYC North Regional Tournament, Bronx High School of Science"
            width="2200"
-           height="1296"> 
+           height="1296">
+      </picture>
+      <div class="hero-duotone" aria-hidden="true"><span class="duo-lift"></span><span class="duo-tint"></span></div>
+      <div class="hero-photo-shade" aria-hidden="true"></div>
+      <div class="hero-photo-hairline" aria-hidden="true"></div>
       <div class="hero-photo-caption">
-        <span>Riverdale Science Olympiad — 2026 Team</span>
+        <span>The 2026 team at Bronx High School of Science · January 24, 2026</span>
       </div>
     </div>
+
+    <div class="hero-cue"><span>01 / Regional day, Bronx Science</span><span>Scroll ↓</span></div>
+    </section>
+
+    <div class="results-ticker" aria-hidden="true"><div class="ticker-track" id="ticker-track"></div></div>
 
     <div class="stats-row stagger-children">
-      <div class="stat-card reveal tilt-card shine-surface" style="--i:0">
-        <div class="number">23</div>
-        <div class="label">Total Events</div>
+      <div class="stat-card reveal" style="--i:0">
+        <div class="number">1st</div>
+        <div class="label">Hovercraft, Team A, at the 2026 NYC North Regional</div>
       </div>
-      <div class="stat-card reveal tilt-card shine-surface" style="--i:1">
-        <div class="number">15</div>
-        <div class="label">Team Members</div>
+      <div class="stat-card reveal" style="--i:1">
+        <div class="number">32</div>
+        <div class="label">Schools in the regional field, Bronx Science to Loyola</div>
       </div>
-      <div class="stat-card reveal tilt-card shine-surface" style="--i:2">
-        <div class="number">3</div>
-        <div class="label">Event Types</div>
+      <div class="stat-card reveal" style="--i:2">
+        <div class="number">24</div>
+        <div class="label">Events on the 2026–27 slate, including the Code Craze trial</div>
       </div>
-      <div class="stat-card reveal tilt-card shine-surface" style="--i:3">
+      <div class="stat-card reveal" style="--i:3">
         <div class="number">2–3</div>
-        <div class="label">Events Per Member</div>
+        <div class="label">Events each member competes in, most with a partner</div>
       </div>
     </div>
 
     <div id="season-personalizer" class="season-personalizer reveal"></div>
 
-    <div class="quick-tips reveal">
-      <h3>Quick-Start Tips</h3>
+    <section class="quick-tips">
+      <div class="tips-heading reveal"><div><span class="hero-eyebrow">Season map · September to January</span><h3>Twenty weeks to Bronx Science.</h3></div><p>Kickoff was September 2. The NYC North Regional<br>is expected January 23, 2027. This is what fills the gap.</p></div>
       <div class="tip-grid">
-        <div class="tip-item"><span class="tip-icon">📖</span><span>Use the Events tab to find your event and access the soinc.org rules and scioly.org wiki.</span></div>
-        <div class="tip-item"><span class="tip-icon">🗓️</span><span>Check the season countdowns on Home for upcoming tournament milestones.</span></div>
-        <div class="tip-item"><span class="tip-icon">🧪</span><span>Build events require early start — coordinate with your partner and club leaders well in advance.</span></div>
-        <div class="tip-item"><span class="tip-icon">💬</span><span>Use the <strong>Contact</strong> tab to reach leaders Florian, Rohan, or Luke, or advisor Ms. Monti.</span></div>
-        <div class="tip-item"><span class="tip-icon">🎯</span><span>Study events reward consistency. Set a weekly study schedule and stick to it.</span></div>
-        <div class="tip-item"><span class="tip-icon">🏅</span><span>Check the <strong>Regional Results</strong> tab to review our 2026 NYC Regional performance event by event.</span></div>
+        <button type="button" class="tip-item reveal" onclick="showView('events', document.querySelector('.nav-tab[onclick*=events]'))"><span class="tip-top"><span class="tip-number">01</span><span class="tip-arrow" aria-hidden="true">↗</span></span><strong>Read the 2026–27 slate</strong><span class="tip-copy">Twenty-four events, each with a draft-rules reference pulled from the team Drive. Botany, Engineering CAD, and Protein Modeling were not on last year's slate.</span><span class="tip-action">Open the slate</span></button>
+        <button type="button" class="tip-item reveal" onclick="showView('studyhub', document.querySelector('.nav-tab[onclick*=studyhub]'))"><span class="tip-top"><span class="tip-number">02</span><span class="tip-arrow" aria-hidden="true">↗</span></span><strong>Book a 25-minute block</strong><span class="tip-copy">The Study Hub timer runs 25 or 50 minutes, logs every finished session on this device, and hands you a five-minute break.</span><span class="tip-action">Start the timer</span></button>
+        <button type="button" class="tip-item reveal" onclick="showView('request', document.querySelector('.nav-tab[onclick*=request]'))"><span class="tip-top"><span class="tip-number">03</span><span class="tip-arrow" aria-hidden="true">↗</span></span><strong>Order balsa before November</strong><span class="tip-copy">Boomilever, Wright Stuff, and Mission Possible need materials in hand before invitational season opens on November 7. Requests go straight to the budget sheet.</span><span class="tip-action">File a request</span></button>
+        <button type="button" class="tip-item reveal" onclick="showView('contact', document.querySelector('.nav-tab[onclick*=contact]'))"><span class="tip-top"><span class="tip-number">04</span><span class="tip-arrow" aria-hidden="true">↗</span></span><strong>Ask Florian, Rohan, or Luke</strong><span class="tip-copy">All three competed at Bronx Science in January, across eleven different events between them. Ms. Monti handles lab access and school logistics.</span><span class="tip-action">Get their emails</span></button>
+        <button type="button" class="tip-item reveal" onclick="showView('studyhub', document.querySelector('.nav-tab[onclick*=studyhub]'))"><span class="tip-top"><span class="tip-number">05</span><span class="tip-arrow" aria-hidden="true">↗</span></span><strong>Flip the 24 flashcards</strong><span class="tip-copy">One card per event on the slate, overview and tips on the back, with an eight-question quiz drawn from the same set.</span><span class="tip-action">Open flashcards</span></button>
+        <button type="button" class="tip-item reveal" onclick="showView('regional', document.querySelector('.nav-tab[onclick*=regional]'))"><span class="tip-top"><span class="tip-number">06</span><span class="tip-arrow" aria-hidden="true">↗</span></span><strong>Read the 2026 scorebook</strong><span class="tip-copy">Where Team A placed 4th in Dynamic Planet and Experimental Design, and the four events that went unstaffed. Every card opens the top five.</span><span class="tip-action">Open the results</span></button>
       </div>
-    </div>
+    </section>
   </div>
 
   <!-- NEWCOMER VIEW -->
   <div id="view-newcomer" class="view">
+    <div class="science-stage" aria-hidden="true"><div class="science-world">
+      <svg class="science-object science-flask" viewBox="0 0 240 300" fill="none"><path d="M87 24h66M96 24v93L38 240q-14 32 24 32h116q38 0 24-32l-58-123V24"/><path class="science-liquid" d="M67 188q27-22 54 0t54 0l28 54q10 28-27 28H64q-37 0-27-28z"/><path d="M139 139h18m-30 29h44m-55 31h67"/><circle cx="103" cy="226" r="8"/><circle cx="131" cy="207" r="5"/></svg>
+      <svg class="science-object science-dna" viewBox="0 0 220 400" fill="none"><path d="M48 20C240 100-20 300 172 380M172 20C-20 100 240 300 48 380"/><path class="dna-rungs" d="M65 30h90M89 60h42M87 100h46M59 140h102M44 180h132M44 220h132M59 260h102M87 300h46M89 340h42M65 370h90"/></svg>
+      <svg class="science-object science-atom" viewBox="0 0 300 300" fill="none"><ellipse cx="150" cy="150" rx="130" ry="48"/><ellipse cx="150" cy="150" rx="130" ry="48" transform="rotate(60 150 150)"/><ellipse cx="150" cy="150" rx="130" ry="48" transform="rotate(120 150 150)"/><circle class="science-nucleus" cx="150" cy="150" r="17"/><circle cx="280" cy="150" r="8"/></svg>
+      <div class="science-coordinate">RCS / FIELD NOTES<br>40.90° N · 73.90° W</div>
+    </div></div>
     <div class="newcomer-hero reveal">
-      <h2>Welcome to Science Olympiad! 🌟</h2>
-      <p>New to the team? This page will tell you everything you need to know about how our club works, what competitions look like, and how to prepare so you can hit the ground running.</p>
+      <div class="hero-eyebrow">New members · Fall 2026</div>
+      <h2 aria-label="Fifteen seats per team. Twenty-three events. You take two or three."><span class="newcomer-line"><span class="newcomer-word">Fifteen seats per team.</span></span><span class="newcomer-line"><span class="newcomer-word">Twenty-three events.</span></span><span class="newcomer-line"><em class="newcomer-word">You take two or three.</em></span></h2>
+      <p>How the club runs, what January 24 looked like inside Bronx High School of Science, and what to do in the twenty weeks before the next regional. Written by the three students who lead the team.</p>
+      <div class="newcomer-scroll">Field notes begin below <span>↓</span></div>
     </div>
 
-    <div class="info-card reveal">
+    <div class="info-card reveal" data-chapter="01">
       <h3>🧪 What Is Science Olympiad?</h3>
-      <p>Science Olympiad is a national STEM competition where teams of up to 15 students compete across 23 events spanning biology, chemistry, physics, earth science, engineering, and technology. Think of it as a science track meet — every event runs simultaneously, so each person's contribution matters. Riverdale competes in <strong>Division C</strong> (high school).</p>
+      <p>Science Olympiad is a national STEM competition where teams of up to 15 students compete across 23 events spanning biology, chemistry, physics, earth science, engineering, and technology. Think of it as a science track meet: every event runs at the same time, so each person's two or three events count toward one team score. Riverdale competes in <strong>Division C</strong> (high school) in the NYC North region, which is hosted at Bronx High School of Science.</p>
     </div>
 
-    <div class="info-card gold-border reveal">
+    <div class="info-card gold-border reveal" data-chapter="02">
       <h3>🏫 How Our Club Works</h3>
-      <p>The club is student-led by our three leaders — <strong>Florian Kroker-McCormack</strong>, <strong>Rohan Varia</strong>, and <strong>Luke Orlowski</strong> — with faculty support from <strong>Ms. Monti</strong>. Here's how it typically runs:</p>
+      <p>The club is student-led by our three leaders, <strong>Florian Kroker-McCormack</strong>, <strong>Rohan Varia</strong>, and <strong>Luke Orlowski</strong>, with faculty support from <strong>Ms. Monti</strong>. Here is how a season runs:</p>
       <ul>
-        <li><strong>Club periods:</strong> Regular meeting times at school where leaders help coordinate preparation, answer questions, and track progress.</li>
-        <li><strong>Event assignments:</strong> Early in the season, leaders assign each member to 2–3 events based on interest and team needs. You'll work with a partner (most events are teams of 2).</li>
-        <li><strong>Independent study:</strong> Much of the preparation happens on your own or with your partner — reading rules, building binders, practicing tests, and constructing devices for build events.</li>
-        <li><strong>Build sessions:</strong> For build events (like Hovercraft, Boomilever, or Electric Vehicle), the team coordinates lab or workshop time to construct and test devices.</li>
+        <li><strong>Club periods:</strong> Regular meeting times at school where leaders coordinate preparation, answer questions, and track progress.</li>
+        <li><strong>Event assignments:</strong> Early in the fall, leaders assign each member to 2–3 events based on interest and team needs. Most events are pairs; Codebusters and Experimental Design take three.</li>
+        <li><strong>Independent study:</strong> Much of the preparation happens on your own or with your partner: reading rules, building binders, taking practice tests, and constructing devices for build events.</li>
+        <li><strong>Build sessions:</strong> For build events like Hovercraft, Boomilever, or Electric Vehicle, the team books lab or workshop time to construct and test devices. Last year's hovercraft was rebuilt and re-calibrated several times before January.</li>
       </ul>
     </div>
 
-    <div class="info-card reveal">
+    <div class="info-card reveal" data-chapter="03">
       <h3>📋 The Three Types of Events</h3>
       <p>Every Science Olympiad event falls into one of three categories:</p>
       <ul>
-        <li><strong>📖 Study Events</strong> — Written tests on specific science topics (e.g., Astronomy, Disease Detectives, Rocks and Minerals). You typically get to bring a resource binder with notes you've prepared. Success comes from deep knowledge and a well-organized binder.</li>
-        <li><strong>🔧 Build Events</strong> — You design and construct a device before the tournament and test it at competition (e.g., Hovercraft, Boomilever, Electric Vehicle). These require hands-on engineering, extensive testing, and careful calibration.</li>
-        <li><strong>🧪 Lab / Hybrid Events</strong> — Hands-on science tasks performed at the competition, sometimes with a written component (e.g., Forensics, Chemistry Lab, Experimental Design). Lab technique and time management are key.</li>
+        <li><strong>📖 Study Events:</strong> Written tests on specific science topics (Astronomy, Disease Detectives, Rocks and Minerals). You usually bring a resource binder you prepared yourself. Success comes from deep knowledge and a well-organized binder.</li>
+        <li><strong>🔧 Build Events:</strong> You design and construct a device before the tournament and test it at competition (Hovercraft, Boomilever, Electric Vehicle, Wright Stuff). These require hands-on engineering, repeated testing, and careful calibration logs.</li>
+        <li><strong>🧪 Lab / Hybrid Events:</strong> Hands-on science tasks performed at the competition, sometimes with a written component (Forensics, Chemistry Lab, Experimental Design). Lab technique and time management decide these.</li>
       </ul>
     </div>
 
-    <div class="info-card gold-border reveal">
+    <div class="info-card gold-border reveal" data-chapter="04">
       <h3>📅 How to Prepare (A Typical Season)</h3>
-      <p>The season starts in early fall and builds toward the regional tournament in January. Here's what good preparation looks like:</p>
+      <p>The season starts in early September and builds toward the regional tournament in late January. Here is what good preparation looks like:</p>
       <ul>
-        <li><strong>Weeks 1–2:</strong> Read your event's official rules on soinc.org cover to cover. Visit the scioly.org wiki page for your event — it has study guides and strategy tips.</li>
-        <li><strong>Weeks 3–6:</strong> Start building your resource binder (for study events) or prototyping your device (for build events). Work through practice tests from scioly.org/tests.</li>
-        <li><strong>Weeks 7–10:</strong> Refine your binder, do timed practice tests, and identify weak areas. Build event devices should be fully assembled and tested multiple times.</li>
-        <li><strong>Final 2 weeks:</strong> Run full timed practice. Review everything. Confirm logistics and make sure your materials are packed and ready.</li>
+        <li><strong>Weeks 1–2:</strong> Read your event's official rules on soinc.org cover to cover. Open the scioly.org wiki page for your event; it has study guides and strategy notes.</li>
+        <li><strong>Weeks 3–6:</strong> Start building your resource binder (study events) or prototyping your device (build events). Work through practice tests from scioly.org/tests.</li>
+        <li><strong>Weeks 7–10:</strong> Refine your binder, take timed practice tests, and identify weak areas. Build devices should be fully assembled and tested multiple times before the November 7 invitational.</li>
+        <li><strong>Final 2 weeks:</strong> Run full timed practice. Review everything. Confirm logistics and make sure your materials are packed and labeled.</li>
       </ul>
     </div>
 
-    <div class="info-card reveal">
+    <div class="info-card reveal" data-chapter="05">
       <h3>🏆 What Competition Day Looks Like</h3>
-      <p>Tournament day is exciting but hectic. Knowing the flow helps you stay calm and focused. Here's a typical competition day at the regional tournament:</p>
+      <p>Tournament day is long and hectic. Knowing the flow helps you stay calm. This is how January 24, 2026 ran at the NYC North Regional:</p>
       <div class="comp-day-timeline" style="margin-top: 16px;">
         <div class="comp-day-item">
-          <div class="comp-day-time">Early Morning — Arrival</div>
-          <div class="comp-day-desc">The team meets at school or at the host site (Bronx High School of Science for NYC regionals). Everyone brings their materials — binders, devices, calculators, safety goggles, and anything else their events require.</div>
+          <div class="comp-day-time">Early Morning · Arrival</div>
+          <div class="comp-day-desc">The team meets at school or at the host site, Bronx High School of Science at 75 West 205th Street. Everyone brings their own materials: binders, devices, calculators, safety goggles, and anything else their events require.</div>
         </div>
         <div class="comp-day-item">
-          <div class="comp-day-time">Morning — Opening & First Events</div>
-          <div class="comp-day-desc">After a brief opening ceremony, events begin running simultaneously across different rooms. You'll head to your assigned room at your event's scheduled time. Events typically last 30–50 minutes.</div>
+          <div class="comp-day-time">Morning · Opening and First Events</div>
+          <div class="comp-day-desc">After a brief opening, events begin running at the same time in different rooms. You head to your assigned room at your event's scheduled block. Events typically last 30–50 minutes.</div>
         </div>
         <div class="comp-day-item">
-          <div class="comp-day-time">Midday — Rotating Events</div>
-          <div class="comp-day-desc">Events run in blocks throughout the day. Between your events, you'll have downtime — use it to review for your next event or support teammates. Stay near the event schedule board for any changes.</div>
+          <div class="comp-day-time">Midday · Rotating Events</div>
+          <div class="comp-day-desc">Events run in blocks throughout the day. Between yours you have downtime: review for the next event or go watch a teammate's device run. Stay near the schedule board for room changes.</div>
         </div>
         <div class="comp-day-item">
-          <div class="comp-day-time">Afternoon — Final Events & Awards</div>
-          <div class="comp-day-desc">The last events wrap up and the tournament ends with an awards ceremony. Top 3 placements per event are recognized, and overall team standings are announced. This is where the whole team experience comes together.</div>
+          <div class="comp-day-time">Afternoon · Final Events and Awards</div>
+          <div class="comp-day-desc">The last events wrap up and the tournament ends with an awards ceremony. The top placements in each event are called, then the overall team standings. In 2026 that is where Hovercraft was announced first out of 32 schools.</div>
         </div>
       </div>
     </div>
 
-    <div class="info-card gold-border reveal">
+    <div class="info-card gold-border reveal" data-chapter="06">
       <h3>💡 Tips for New Members</h3>
       <ul>
-        <li><strong>Start early.</strong> The biggest regret from veteran members is not starting preparation soon enough. Even 20 minutes a day makes a huge difference over weeks.</li>
-        <li><strong>Use scioly.org.</strong> The wiki, test exchange, and forums are the single best resources available. Thousands of competitors use them.</li>
-        <li><strong>Communicate with your partner.</strong> Most events are done in pairs. Coordinate who studies what, divide your binder sections, and practice together.</li>
-        <li><strong>Ask the leaders.</strong> Florian, Rohan, and Luke have all competed and can point you to the right resources. Don't be shy — that's what they're here for.</li>
-        <li><strong>Focus on your binder.</strong> For study events, a well-organized, tabbed binder with diagrams, tables, and practice problems is often the difference between a good score and a great one.</li>
-        <li><strong>Have fun.</strong> Science Olympiad is one of the most rewarding extracurriculars you can do. The friendships and knowledge you build will last well beyond competition season.</li>
+        <li><strong>Start early.</strong> The most common regret from returning members is starting preparation too late. Twenty minutes a day from September adds up to more than forty hours by January.</li>
+        <li><strong>Use scioly.org.</strong> The wiki, the test exchange, and the forums are the best resources available for every event on the slate.</li>
+        <li><strong>Communicate with your partner.</strong> Most events are pairs. Decide who studies what, split the binder sections, and take practice tests together under time.</li>
+        <li><strong>Ask the leaders.</strong> Florian competed in Chemistry Lab, Dynamic Planet, and Experimental Design; Rohan in Codebusters, Designer Genes, Entomology, Helicopter, and Write It Do It; Luke in Boomilever, Disease Detectives, Experimental Design, and Water Quality. Between them they can point you at the right resource for almost any event.</li>
+        <li><strong>Build the binder.</strong> For study events, a tabbed binder with diagrams, tables, and worked practice problems is often the difference between a mid-field score and a top-ten finish.</li>
+        <li><strong>Watch a build run.</strong> Even if you are in study events, watching Hovercraft or Electric Vehicle calibrate on competition day shows you what a season of testing looks like.</li>
       </ul>
     </div>
 
-    <div class="info-card reveal">
+    <div class="info-card reveal" data-chapter="07">
       <h3>🔗 Essential Links to Bookmark</h3>
       <div class="modal-links" style="margin-top: 8px;">
-        <a class="modal-link link-primary" href="https://www.soinc.org/events/div-c" target="_blank">📋 Official 2026 Rules (soinc.org)</a>
-        <a class="modal-link link-secondary" href="https://scioly.org/wiki/index.php/Main_Page" target="_blank">📘 Scioly.org Wiki</a>
-        <a class="modal-link link-secondary" href="https://scioly.org/tests/" target="_blank">📄 Practice Tests</a>
-        <a class="modal-link link-secondary" href="https://scioly.org/forums/" target="_blank">💬 Forums</a>
+        <a class="modal-link link-primary" href="https://www.soinc.org/events/div-c" target="_blank" rel="noopener noreferrer">📋 Official Division C Rules (soinc.org)</a>
+        <a class="modal-link link-secondary" href="https://scioly.org/wiki/index.php/Main_Page" target="_blank" rel="noopener noreferrer">📘 Scioly.org Wiki</a>
+        <a class="modal-link link-secondary" href="https://scioly.org/tests/" target="_blank" rel="noopener noreferrer">📄 Practice Tests</a>
+        <a class="modal-link link-secondary" href="https://scioly.org/forums/" target="_blank" rel="noopener noreferrer">💬 Forums</a>
       </div>
     </div>
   </div>
 
   <!-- EVENTS VIEW -->
   <div id="view-events" class="view">
-    <div class="section-title">2026 Division C Events</div>
-    <div class="section-subtitle">Click any event for rules summary, study tips, and links. Use filters to explore by type.</div>
+    <div class="catalog-hero reveal full-bleed"><div class="hero-eyebrow">The 2026–27 slate · Division C</div><div class="section-title">Anatomy &amp; Physiology<br>to <em>Wright Stuff.</em></div><p>Twenty-three Division C events and Code Craze, a featured trial. Every card opens the draft reference from the team Drive; the final rules on soinc.org take precedence once they ship.</p><span class="catalog-count" aria-hidden="true">24</span></div>
 
-    <div class="filter-row">
-      <input class="search-bar" id="event-search" type="text" placeholder="🔍  Search events..." oninput="filterEvents()">
-      <button class="filter-btn active" onclick="filterByType('all', this)">All</button>
-      <button class="filter-btn" onclick="filterByType('study', this)">📖 Study</button>
-      <button class="filter-btn" onclick="filterByType('build', this)">🔧 Build</button>
-      <button class="filter-btn" onclick="filterByType('lab', this)">🧪 Lab / Hybrid</button>
+    <div class="catalog-body">
+      <aside class="catalog-side" aria-label="Catalog filters and references">
+        <div class="section-subtitle">Filter by format, or search by name.</div>
+        <div class="filter-row">
+          <input class="search-bar" id="event-search" type="search" aria-label="Search events" placeholder="Search events…" oninput="filterEvents()">
+          <button class="filter-btn active" onclick="filterByType('all', this)">All</button>
+          <button class="filter-btn" onclick="filterByType('study', this)">📖 Study</button>
+          <button class="filter-btn" onclick="filterByType('build', this)">🔧 Build</button>
+          <button class="filter-btn" onclick="filterByType('lab', this)">🧪 Lab / Hybrid</button>
+        </div>
+        <p id="event-count" class="event-count" role="status" aria-live="polite"></p>
+        <div class="season-reference">
+          <div><span class="reference-label">Sources · 2026–27</span><p>The 23 Drive references are draft rules with known errata; Code Craze links to the official trial resources. Where they disagree with soinc.org, soinc.org wins.</p></div>
+          <a class="u-link" href="https://drive.google.com/drive/folders/1hlSzDZuCUsxF2Q1OI9EgRWi8wXSZqLXX" target="_blank" rel="noopener noreferrer">Open the Drive folder <span aria-hidden="true">↗</span></a>
+        </div>
+      </aside>
+      <div class="event-film-shell">
+        <div class="film-heading"><span>Index / 24 entries</span><span>Hover or tab to a card to read its name large ↗</span></div>
+        <div class="index-ghost" id="index-ghost" aria-hidden="true"></div>
+        <div class="events-grid" id="events-grid"></div>
+      </div>
     </div>
-
-    <div class="events-grid" id="events-grid"></div>
   </div>
 
   <!-- REGIONAL RESULTS VIEW -->
   <div id="view-regional" class="view">
-    <div class="regional-hero reveal">
-      <h2>2026 NYC North Regional Results</h2>
-      <p>Riverdale Country School competed at the 2026 NYC North Regional Tournament with two teams. Click any event below to see placement details, team members, and the top 5 schools.</p>
+    <div class="regional-hero reveal full-bleed">
+      <div class="hero-eyebrow">Scorebook · January 24, 2026</div>
+      <h2>2026 NYC North Regional</h2>
+      <p>Two teams, thirty-two schools, twenty-three events inside Bronx High School of Science. Team A finished 20th overall and Team B 31st. Gavin and Austin's hovercraft took first in the field, and Dynamic Planet and Experimental Design both placed 4th.</p>
       <div class="regional-meta">
         <div class="regional-meta-item"><span class="meta-icon">📍</span> Bronx High School of Science</div>
         <div class="regional-meta-item"><span class="meta-icon">📅</span> January 24, 2026</div>
@@ -241,23 +289,27 @@
 
     <div class="overall-standing stagger-children">
       <div class="standing-card reveal" style="--i:0">
-        <div class="standing-val">20th</div>
-        <div class="standing-label">Overall (Team A)</div>
+        <div class="standing-val">1st</div>
+        <div class="standing-label">Hovercraft · Team A · Gavin and Austin</div>
       </div>
       <div class="standing-card reveal" style="--i:1">
-        <div class="standing-val">31st</div>
-        <div class="standing-label">Overall (Team B)</div>
+        <div class="standing-val">4th</div>
+        <div class="standing-label">Dynamic Planet and Experimental Design · Team A</div>
       </div>
       <div class="standing-card reveal" style="--i:2">
-        <div class="standing-val">1st 🥇</div>
-        <div class="standing-label">Best Event — Hovercraft</div>
+        <div class="standing-val">20th</div>
+        <div class="standing-label">Team A overall, of 32 schools</div>
+      </div>
+      <div class="standing-card reveal" style="--i:3">
+        <div class="standing-val">31st</div>
+        <div class="standing-label">Team B overall, of 32 schools</div>
       </div>
     </div>
 
-    <div class="section-subtitle" style="margin-top: 8px;">Toggle between Team A and Team B results. Click any event for full details.</div>
+    <div class="section-subtitle" style="margin-top: 8px;">Team A, Team B, or both side by side. Each card opens the top five and Riverdale's finish.</div>
 
     <div class="filter-row">
-      <input class="search-bar" id="result-search" type="text" placeholder="🔍  Search events..." oninput="filterResults()">
+      <input class="search-bar" id="result-search" type="text" aria-label="Search results" placeholder="Search events…" oninput="filterResults()">
       <div class="team-toggle">
         <button class="team-toggle-btn active" onclick="setResultTeam('A', this)">Team A</button>
         <button class="team-toggle-btn" onclick="setResultTeam('B', this)">Team B</button>
@@ -265,13 +317,29 @@
       </div>
     </div>
 
-    <div class="events-grid" id="results-grid"></div>
+    <div class="results-chapter">
+      <aside class="results-rail" id="results-rail" aria-hidden="true">
+        <div class="rail-numeral"><span id="rail-index">01</span><span class="rail-slash">/</span><span id="rail-total">05</span></div>
+        <div class="rail-chapter" id="rail-chapter">Life science</div>
+        <div class="rail-event" id="rail-event">Anatomy and Physiology</div>
+        <div class="rail-progress"><span id="rail-bar"></span></div>
+        <div class="rail-note">Scroll to page through the scorebook</div>
+      </aside>
+      <div class="events-grid results-stream" id="results-grid"></div>
+    </div>
   </div>
 
   <!-- TEAM ROSTER VIEW -->
   <div id="view-roster" class="view">
-    <div class="section-title">2025–2026 Team Roster</div>
-    <div class="section-subtitle">Our team members and their event assignments for the 2026 NYC Regional.</div>
+    <details class="roster-next">
+      <summary><span>2026–27 Team Roster</span><span class="roster-next-status">New season <span aria-hidden="true">＋</span></span></summary>
+      <div class="roster-next-body"><h3>Coming soon</h3><p>The 2026–27 roster and event assignments will be posted here after the first club periods of the fall. Last year's two teams are listed below.</p></div>
+    </details>
+    <header class="view-head">
+      <div class="section-title">2025–26 Team Roster</div>
+      <div class="section-subtitle">Twenty-two students across Team A and Team B, with the events each one competed in at the 2026 NYC North Regional.</div>
+    </header>
+    <div class="roster-strip" id="roster-strip" aria-hidden="true"></div>
     <div class="team-toggle" style="margin-bottom: 24px;">
       <button class="team-toggle-btn active" onclick="setRosterTeam('all', this)">All Members</button>
       <button class="team-toggle-btn" onclick="setRosterTeam('A', this)">Team A</button>
@@ -282,29 +350,35 @@
 
   <!-- RESOURCES VIEW -->
   <div id="view-resources" class="view">
-    <div class="section-title reveal">Study Resources</div>
-    <div class="section-subtitle reveal">External links, tools, and references to power your preparation.</div>
+    <header class="view-head">
+      <div class="section-title reveal">Study Resources</div>
+      <div class="section-subtitle reveal">The four sites the leaders actually use: rules from soinc.org, and the wiki, test exchange, and forums at scioly.org.</div>
+    </header>
 
     <div class="resources-grid stagger-children">
-      <div class="resource-card reveal tilt-card shine-surface" style="--i:0">
-        <h3>🌐 soinc.org — Official Rules</h3>
-        <p>The official Science Olympiad website with the complete 2026 Division C rules manual, event clarifications, and announcements.</p>
-        <a class="resource-link" href="https://www.soinc.org/events/div-c" target="_blank">Visit soinc.org →</a>
+      <div class="resource-card reveal" style="--i:0">
+        <span class="resource-index">01</span>
+        <div><h3>🌐 soinc.org — Official Rules</h3>
+        <p>The official Science Olympiad site with the Division C rules manual, event clarifications, and the 2027 event slate PDF.</p></div>
+        <a class="resource-link u-link" href="https://www.soinc.org/events/div-c" target="_blank" rel="noopener noreferrer">soinc.org →</a>
       </div>
-      <div class="resource-card reveal tilt-card shine-surface" style="--i:1">
-        <h3>📘 Scioly.org Wiki</h3>
-        <p>Community-maintained wiki with detailed study guides, past exam question banks, and strategy tips for every event.</p>
-        <a class="resource-link" href="https://scioly.org/wiki/index.php/Main_Page" target="_blank">Visit Wiki →</a>
+      <div class="resource-card reveal" style="--i:1">
+        <span class="resource-index">02</span>
+        <div><h3>📘 Scioly.org Wiki</h3>
+        <p>Community-maintained wiki with study guides, past question banks, and strategy notes for every event on the slate.</p></div>
+        <a class="resource-link u-link" href="https://scioly.org/wiki/index.php/Main_Page" target="_blank" rel="noopener noreferrer">Open the wiki →</a>
       </div>
-      <div class="resource-card reveal tilt-card shine-surface" style="--i:2">
-        <h3>📋 Scioly.org Tests Exchange</h3>
-        <p>Huge archive of past Science Olympiad invitational and tournament tests — the best way to practice for study events.</p>
-        <a class="resource-link" href="https://scioly.org/tests/" target="_blank">Browse Tests →</a>
+      <div class="resource-card reveal" style="--i:2">
+        <span class="resource-index">03</span>
+        <div><h3>📋 Scioly.org Test Exchange</h3>
+        <p>An archive of past invitational and tournament tests. The fastest way to find out what a Disease Detectives or Astronomy test actually asks.</p></div>
+        <a class="resource-link u-link" href="https://scioly.org/tests/" target="_blank" rel="noopener noreferrer">Browse tests →</a>
       </div>
-      <div class="resource-card reveal tilt-card shine-surface" style="--i:3">
-        <h3>💬 Scioly.org Forums</h3>
-        <p>Active community forums where competitors share resources, answer questions, and discuss strategies for each event.</p>
-        <a class="resource-link" href="https://scioly.org/forums/" target="_blank">Join Discussion →</a>
+      <div class="resource-card reveal" style="--i:3">
+        <span class="resource-index">04</span>
+        <div><h3>💬 Scioly.org Forums</h3>
+        <p>Competitor forums where build-event teams trade calibration notes and study teams compare binders, event by event.</p></div>
+        <a class="resource-link u-link" href="https://scioly.org/forums/" target="_blank" rel="noopener noreferrer">Join the forums →</a>
       </div>
     </div>
   </div>
@@ -314,15 +388,17 @@
 
   <!-- PURCHASE REQUEST VIEW -->
   <div id="view-request" class="view">
-    <div class="section-title reveal">Request a Purchase</div>
-    <div class="section-subtitle reveal">Submit materials, supplies, books, equipment, and competition needs for leader review.</div>
+    <header class="view-head">
+      <div class="section-title reveal">Request a Purchase</div>
+      <div class="section-subtitle reveal">Materials, supplies, books, equipment, and competition needs. Requests land on the team budget sheet for the leaders to approve, order, and mark received.</div>
+    </header>
 
-    <section class="budget-hq public-request-hq reveal">
+    <section class="budget-hq public-request-hq reveal view-body">
       <div class="budget-header">
         <div>
           <span class="budget-kicker">Team Purchasing</span>
           <h3>Send a Budget Request</h3>
-          <p>Requests go straight to the team budget sheet. Leaders can approve, order, or mark them received from the protected dashboard.</p>
+          <p>Requests go straight to the team budget sheet. Leaders approve, order, or mark them received from the protected dashboard.</p>
         </div>
       </div>
       <form class="purchase-request-form public-request-form" onsubmit="submitBudgetRequest(event)">
@@ -382,10 +458,12 @@
 
   <!-- LEADERS VIEW -->
   <div id="view-leaders" class="view">
-    <div class="section-title reveal">Leaders Dashboard</div>
-    <div class="section-subtitle reveal">Password-gated planning space for roster notes, practice test tracking, and budget access.</div>
+    <header class="view-head">
+      <div class="section-title reveal">Leaders Dashboard</div>
+      <div class="section-subtitle reveal">Password-gated space for Florian, Rohan, and Luke: roster notes, practice test tracking, and the live budget.</div>
+    </header>
 
-    <div class="leaders-gate reveal" id="leaders-gate">
+    <div class="leaders-gate reveal view-body" id="leaders-gate">
       <form class="leaders-login" onsubmit="unlockLeaders(event)">
         <div class="leaders-lock-icon">🔒</div>
         <h3>Leader Access</h3>
@@ -399,7 +477,7 @@
       </form>
     </div>
 
-    <div class="leaders-dashboard hidden" id="leaders-dashboard">
+    <div class="leaders-dashboard hidden view-body" id="leaders-dashboard">
       <div class="leaders-actions reveal">
         <a class="resource-link budget-link" href="https://docs.google.com/spreadsheets/d/1gzxt-oxuxjCn4QsGHNc7KWcdt2OTQQNqS9WfYuAIvn8/edit" target="_blank" rel="noopener">Open Team Budget →</a>
       </div>
@@ -501,7 +579,7 @@
           <h3>Student Roster</h3>
           <p>Click a student to view private notes and practice test score slots. Edit the blanks in <strong>assets/js/data.js</strong>.</p>
         </div>
-        <input class="search-bar leaders-search" id="leaders-search" type="text" placeholder="🔍  Search students..." oninput="renderLeadersRoster()">
+        <input class="search-bar leaders-search" id="leaders-search" type="text" aria-label="Search students" placeholder="Search students…" oninput="renderLeadersRoster()">
       </div>
 
       <div class="roster-grid" id="leaders-roster-grid"></div>
@@ -510,13 +588,15 @@
 
   <!-- SCIOLY AI VIEW -->
   <div id="view-ai" class="view">
-    <div class="section-title reveal">Ask SciOly AI</div>
-    <div class="section-subtitle reveal">Get help studying Science Olympiad concepts, planning practice, and reviewing event material.</div>
+    <header class="view-head">
+      <div class="section-title reveal">Ask SciOly AI</div>
+      <div class="section-subtitle reveal">A question box wired to the team's Foundry-backed model. Ask about a rule, a formula, or how to structure a binder for Rocks and Minerals.</div>
+    </header>
 
-    <div class="ai-card reveal">
+    <div class="ai-card reveal view-body">
       <form id="ai-query-form" onsubmit="askSciOlyAI(event)">
         <label for="ai-query">What would you like to know?</label>
-        <textarea id="ai-query" rows="5" maxlength="2000" placeholder="Example: Explain how to identify an igneous rock for Rocks and Minerals." required></textarea>
+        <textarea id="ai-query" rows="5" maxlength="2000" placeholder="Example: How do I tell an igneous rock from a metamorphic one for Rocks and Minerals?" required></textarea>
         <div class="ai-form-footer">
           <span>AI can make mistakes. Check important answers against the official event rules.</span>
           <button id="ai-submit" type="submit">Ask SciOly AI</button>
@@ -532,67 +612,69 @@
 
   <!-- CONTACT VIEW -->
   <div id="view-contact" class="view">
-    <div class="section-title reveal">Contact Leaders & Advisors</div>
-    <div class="section-subtitle reveal">Reach out with questions about events, practices, build projects, or anything Science Olympiad.</div>
+    <header class="view-head">
+      <div class="section-title reveal">Contact Leaders &amp; Advisors</div>
+      <div class="section-subtitle reveal">Three student leaders and one faculty advisor. Email is the fastest way to reach any of them.</div>
+    </header>
 
     <div class="contact-grid stagger-children">
-      <div class="contact-card reveal tilt-card shine-surface" style="--i:0">
+      <div class="contact-card reveal" style="--i:0">
         <div class="contact-avatar">LO</div>
-        <h3>Luke Orlowski</h3>
-        <div class="contact-role">Student Leader</div>
-        <a class="contact-email-btn" href="mailto:lorlowski27@riverdale.edu">✉️ lorlowski27@riverdale.edu</a>
+        <div class="contact-body"><h3>Luke Orlowski</h3>
+        <div class="contact-role">Student Leader · Boomilever, Disease Detectives, Experimental Design, Water Quality</div></div>
+        <a class="contact-email-btn u-link" href="mailto:lorlowski27@riverdale.edu">lorlowski27@riverdale.edu</a>
       </div>
-      <div class="contact-card reveal tilt-card shine-surface" style="--i:1">
+      <div class="contact-card reveal" style="--i:1">
         <div class="contact-avatar">FK</div>
-        <h3>Florian Kroker-McCormack</h3>
-        <div class="contact-role">Student Leader</div>
-        <a class="contact-email-btn" href="mailto:fkrokermccormack27@riverdale.edu">✉️ fkrokermccormack27@riverdale.edu</a>
+        <div class="contact-body"><h3>Florian Kroker-McCormack</h3>
+        <div class="contact-role">Student Leader · Chemistry Lab, Dynamic Planet, Experimental Design</div></div>
+        <a class="contact-email-btn u-link" href="mailto:fkrokermccormack27@riverdale.edu">fkrokermccormack27@riverdale.edu</a>
       </div>
-      <div class="contact-card reveal tilt-card shine-surface" style="--i:2">
+      <div class="contact-card reveal" style="--i:2">
         <div class="contact-avatar">RV</div>
-        <h3>Rohan Varia</h3>
-        <div class="contact-role">Student Leader</div>
-        <a class="contact-email-btn" href="mailto:rvaria27@riverdale.edu">✉️ rvaria27@riverdale.edu</a>
+        <div class="contact-body"><h3>Rohan Varia</h3>
+        <div class="contact-role">Student Leader · Codebusters, Designer Genes, Entomology, Helicopter, Write It Do It</div></div>
+        <a class="contact-email-btn u-link" href="mailto:rvaria27@riverdale.edu">rvaria27@riverdale.edu</a>
       </div>
-      <div class="contact-card reveal tilt-card shine-surface" style="--i:3">
+      <div class="contact-card reveal" style="--i:3">
         <div class="contact-avatar">LM</div>
-        <h3>Ms. Monti</h3>
-        <div class="contact-role">Faculty Advisor</div>
-        <a class="contact-email-btn" href="mailto:lmonti@riverdale.edu">✉️ lmonti@riverdale.edu</a>
+        <div class="contact-body"><h3>Ms. Monti</h3>
+        <div class="contact-role">Faculty Advisor · Lab access, travel, and school logistics</div></div>
+        <a class="contact-email-btn u-link" href="mailto:lmonti@riverdale.edu">lmonti@riverdale.edu</a>
       </div>
     </div>
 
     <div class="contact-info-box reveal">
       <h3>📬 When to Reach Out</h3>
       <p>
-        <strong>Event assignments & scheduling</strong> — Contact any of the student leaders.<br><br>
-        <strong>Build project help or lab access</strong> — Email Ms. Monti or a student leader to coordinate time and equipment.<br><br>
-        <strong>Rules questions</strong> — Check the <a href="https://www.soinc.org/events/div-c" target="_blank" style="color: var(--crimson); font-weight: 600;">official soinc.org rules</a> first, then reach out if still unclear.<br><br>
-        <strong>Team logistics (tournament day, travel, etc.)</strong> — Ms. Monti is the best point of contact for anything involving school administration.
+        <strong>Event assignments and scheduling:</strong> any of the student leaders.<br><br>
+        <strong>Build project help or lab access:</strong> email Ms. Monti or a student leader to book time and equipment.<br><br>
+        <strong>Rules questions:</strong> check the <a class="u-link" href="https://www.soinc.org/events/div-c" target="_blank" rel="noopener noreferrer">official soinc.org rules</a> first, then ask if it is still unclear.<br><br>
+        <strong>Team logistics (tournament day, travel):</strong> Ms. Monti is the point of contact for anything involving school administration.
       </p>
     </div>
   </div>
-</div>
+</main>
 
 <!-- LEADER STUDENT MODAL -->
-<div id="leader-student-modal-overlay" class="modal-overlay hidden" onclick="closeLeaderStudentModalOutside(event)">
+<div id="leader-student-modal-overlay" class="modal-overlay hidden" data-lenis-prevent onclick="closeLeaderStudentModalOutside(event)">
   <div class="modal" id="leader-student-modal">
     <div class="modal-header">
       <div class="modal-type" id="leader-student-modal-type">Leader Notes</div>
       <h2 id="leader-student-modal-title"></h2>
-      <button class="modal-close" onclick="closeLeaderStudentModal()">✕</button>
+      <button class="modal-close" aria-label="Close" onclick="closeLeaderStudentModal()">✕</button>
     </div>
     <div class="modal-body" id="leader-student-modal-body"></div>
   </div>
 </div>
 
 <!-- EVENT MODAL -->
-<div id="modal-overlay" class="modal-overlay hidden" onclick="closeModalOutside(event)">
+<div id="modal-overlay" class="modal-overlay hidden" data-lenis-prevent onclick="closeModalOutside(event)">
   <div class="modal" id="modal">
     <div class="modal-header">
       <div class="modal-type" id="modal-type"></div>
       <h2 id="modal-title"></h2>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <button class="modal-close" aria-label="Close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body" id="modal-body">
       <div class="modal-section">
@@ -600,7 +682,7 @@
         <p id="modal-overview"></p>
       </div>
       <div class="modal-section">
-        <h3>📌 Key Rules & Format</h3>
+        <h3 id="modal-rules-heading">Preparation Notes</h3>
         <ul id="modal-rules"></ul>
       </div>
       <div class="modal-section">
@@ -616,23 +698,23 @@
 </div>
 
 <!-- RESULTS MODAL -->
-<div id="result-modal-overlay" class="modal-overlay hidden" onclick="closeResultModalOutside(event)">
-  <div class="modal" id="result-modal">
+<div id="result-modal-overlay" class="modal-overlay hidden" data-lenis-prevent onclick="closeResultModalOutside(event)">
+  <div class="modal" id="result-modal" role="dialog" aria-modal="true" aria-labelledby="result-modal-title" tabindex="-1">
     <div class="modal-header">
       <div class="modal-type" id="result-modal-type"></div>
       <h2 id="result-modal-title"></h2>
-      <button class="modal-close" onclick="closeResultModal()">✕</button>
+      <button class="modal-close" aria-label="Close result details" onclick="closeResultModal()">✕</button>
     </div>
     <div class="modal-body" id="result-modal-body"></div>
   </div>
 </div>
 
 <!-- COMMAND PALETTE -->
-<div id="fx-palette" class="hidden">
+<div id="fx-palette" class="hidden" data-lenis-prevent>
   <div class="fx-palette-box">
     <div class="fx-palette-input-row">
-      <span class="fx-search-ico">🔍</span>
-      <input id="fx-palette-input" type="text" placeholder="Search events, teammates, pages, actions…" autocomplete="off" spellcheck="false">
+      <span class="fx-search-ico" aria-hidden="true">⌕</span>
+      <input id="fx-palette-input" type="text" placeholder="Search events, teammates, pages, actions…" autocomplete="off" spellcheck="false" aria-label="Command palette search">
       <span class="fx-palette-esc">ESC</span>
     </div>
     <div id="fx-palette-results" class="fx-palette-results"></div>
@@ -657,8 +739,45 @@
 <div id="fx-toasts"></div>
 <canvas id="fx-confetti"></canvas>
 
-<script src="assets/js/data.js"></script>
-<script src="assets/js/app.js"></script>
-<script src="assets/js/features.js"></script>
+<!-- FILM GRAIN, PAGE WIPE, CUSTOM CURSOR -->
+<div id="fx-grain" aria-hidden="true"></div>
+<div id="fx-wipe" aria-hidden="true"></div>
+<div id="fx-cursor" aria-hidden="true"></div>
+
+<!-- SVG filter: chromatic-aberration edge used by the hero scale-down -->
+<svg class="fx-defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <filter id="hero-ca" color-interpolation-filters="sRGB" x="-2%" y="-2%" width="104%" height="104%">
+    <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="r"/>
+    <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="g"/>
+    <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="b"/>
+    <feOffset id="hero-ca-r" in="r" dx="0" dy="0" result="ro"/>
+    <feOffset id="hero-ca-b" in="b" dx="0" dy="0" result="bo"/>
+    <feBlend in="ro" in2="g" mode="screen" result="rg"/>
+    <feBlend in="rg" in2="bo" mode="screen"/>
+  </filter>
+</svg>
+
+<!-- Scripts start right after the largest contentful paint (or after 300 ms, whichever comes first), so the opening shot never waits on them.
+     Order is preserved (async=false): GSAP → ScrollTrigger → Lenis → data → catalog → app → features. -->
+<script>
+(function () {
+  var files = ["https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/gsap.min.js", "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/ScrollTrigger.min.js", "assets/vendor/lenis.min.js", "assets/js/data.js", "assets/js/events-2027.js", "assets/js/app.js", "assets/js/features.js"];
+  var started = false;
+  function start() {
+    if (started) return;
+    started = true;
+    files.forEach(function (src) { var s = document.createElement("script"); s.src = src; s.async = false; document.body.appendChild(s); });
+  }
+  var img = document.querySelector(".hero-photo-frame img");
+  setTimeout(start, 300);
+  try {
+    if (PerformanceObserver.supportedEntryTypes.indexOf("largest-contentful-paint") !== -1) {
+      new PerformanceObserver(function (list, observer) { observer.disconnect(); setTimeout(start, 0); }).observe({ type: "largest-contentful-paint", buffered: true });
+    } else if (img && img.decode) {
+      img.decode().then(function () { requestAnimationFrame(function () { requestAnimationFrame(start); }); }).catch(start);
+    } else start();
+  } catch (e) { start(); }
+})();
+</script>
 </body>
 </html>

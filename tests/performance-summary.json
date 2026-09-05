@@ -1,0 +1,76 @@
+{
+  "lighthouseVersion": "12.8.2",
+  "fetchTime": "2026-09-05T02:39:36.767Z",
+  "url": "http://localhost:8089/",
+  "method": "Local python3 -m http.server (HTTP/1.0, no compression); default Lighthouse simulated throttling; three consecutive mobile runs scored 90, 91, 91. Functional checks used stubbed network for the budget sheet and AI endpoint.",
+  "mobile": {
+    "performanceScore": 91,
+    "accessibility": 100,
+    "bestPractices": 100,
+    "throttling": {
+      "rttMs": 150,
+      "throughputKbps": 1638.4,
+      "requestLatencyMs": 562.5,
+      "downloadThroughputKbps": 1474.5600000000002,
+      "uploadThroughputKbps": 675,
+      "cpuSlowdownMultiplier": 4
+    },
+    "metrics": {
+      "first-contentful-paint": {
+        "value": 2103.6,
+        "unit": "millisecond"
+      },
+      "largest-contentful-paint": {
+        "value": 3228.6,
+        "unit": "millisecond"
+      },
+      "total-blocking-time": {
+        "value": 0,
+        "unit": "millisecond"
+      },
+      "cumulative-layout-shift": {
+        "value": 0,
+        "unit": "unitless"
+      },
+      "speed-index": {
+        "value": 2657.3,
+        "unit": "millisecond"
+      }
+    }
+  },
+  "desktop": {
+    "performanceScore": 99,
+    "accessibility": 100,
+    "bestPractices": 100,
+    "throttling": {
+      "rttMs": 40,
+      "throughputKbps": 10240,
+      "requestLatencyMs": 0,
+      "downloadThroughputKbps": 0,
+      "uploadThroughputKbps": 0,
+      "cpuSlowdownMultiplier": 1
+    },
+    "metrics": {
+      "first-contentful-paint": {
+        "value": 483.0,
+        "unit": "millisecond"
+      },
+      "largest-contentful-paint": {
+        "value": 762.0,
+        "unit": "millisecond"
+      },
+      "total-blocking-time": {
+        "value": 0,
+        "unit": "millisecond"
+      },
+      "cumulative-layout-shift": {
+        "value": 0,
+        "unit": "unitless"
+      },
+      "speed-index": {
+        "value": 999.6,
+        "unit": "millisecond"
+      }
+    }
+  }
+}

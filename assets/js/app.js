@@ -3,7 +3,8 @@
 let currentFilter = 'all';
 let currentResultTeam = 'A';
 let currentRosterTeam = 'all';
-let scrollAnimationObserver = null;
+let activeViewTransition = null;
+let navigationSequence = 0;
 let leadersUnlocked = sessionStorage.getItem('leadersAccessGranted') === 'true';
 let budgetLoaded = false;
 let budgetLoading = false;
@@ -124,16 +125,22 @@ function setBudgetFormStatus(message, type = '', form = null) {
 }
 
 function renderEvents(events) {
+  window.SiteMotion?.beforeRender('events');
   const grid = document.getElementById('events-grid');
   grid.innerHTML = '';
+  document.getElementById('event-count').textContent = events.length + ' of ' + CURRENT_EVENTS.length + ' events';
+  if (!events.length) grid.innerHTML = '<div class="event-empty">No matching events. Try another name or event type.</div>';
   events.forEach((ev, i) => {
     const iconClass = ev.type === 'study' ? 'icon-study' : ev.type === 'build' ? 'icon-build' : 'icon-lab';
     const badgeClass = ev.type === 'study' ? 'badge-study' : ev.type === 'build' ? 'badge-build' : 'badge-lab';
     const badgeLabel = ev.type === 'study' ? 'Study' : ev.type === 'build' ? 'Build' : 'Lab / Hybrid';
     const card = document.createElement('div');
-    card.className = 'event-card reveal tilt-card shine-surface';
-    card.style.setProperty('--i', i % 12);
+    card.className = 'event-card reveal';
+    card.dataset.name = ev.name;
+    card.style.setProperty('--i', i % 3);
+    card.dataset.type = ev.type;
     card.innerHTML = `
+      <div class="event-card-meta"><span>${escapeHTML(ev.category || "2025–26 archive")}</span><span>${String(i + 1).padStart(2, "0")}</span></div>
       <div class="event-card-top">
         <div class="event-icon ${iconClass}">${ev.icon}</div>
         <div>
@@ -141,11 +148,17 @@ function renderEvents(events) {
           <span class="event-type-badge ${badgeClass}">${badgeLabel}</span>
         </div>
       </div>
-      <p class="event-desc">${ev.shortDesc}</p>
+      <p class="event-desc">${ev.shortDesc}</p><div class="event-card-footer"><span>${ev.status || "2025–26 archive"}</span><span aria-hidden="true">↗</span></div>
     `;
+    card.setAttribute('role', 'button');
+    card.tabIndex = 0;
+    card.setAttribute('aria-label', 'View ' + ev.name);
     card.addEventListener('click', () => openModal(ev));
-    attachPointerGlow(card);
-    attachTilt(card);
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(ev); }
+    });
+
+
     grid.appendChild(card);
   });
   initScrollAnimations();
@@ -153,7 +166,7 @@ function renderEvents(events) {
 
 function filterEvents() {
   const search = document.getElementById('event-search').value.toLowerCase();
-  let filtered = EVENTS;
+  let filtered = CURRENT_EVENTS;
   if (currentFilter !== 'all') filtered = filtered.filter(e => e.type === currentFilter);
   if (search) filtered = filtered.filter(e => e.name.toLowerCase().includes(search) || e.shortDesc.toLowerCase().includes(search));
   renderEvents(filtered);
@@ -168,7 +181,8 @@ function filterByType(type, btn) {
 
 function openModal(ev) {
   const typeLabel = ev.type === 'study' ? '📖 Study Event' : ev.type === 'build' ? '🔧 Build Event' : '🧪 Lab / Hybrid Event';
-  document.getElementById('modal-type').textContent = typeLabel;
+  document.getElementById('modal-type').textContent = (ev.season || '2025–26 archive') + ' · ' + typeLabel;
+  document.getElementById('modal-rules-heading').textContent = ev.season ? 'Preparation Notes · ' + ev.status : '2025–26 Rules & Format';
   document.getElementById('modal-title').textContent = ev.name;
   document.getElementById('modal-overview').textContent = ev.overview;
 
@@ -184,6 +198,7 @@ function openModal(ev) {
 
   const linksDiv = document.getElementById('modal-links');
   linksDiv.innerHTML = `
+    ${ev.referenceUrl ? '<a class="modal-link link-primary" href="' + escapeHTML(ev.referenceUrl) + '" target="_blank" rel="noopener noreferrer">↗ ' + (ev.status === 'Featured trial' ? 'Official trial resources' : '2026–27 Drive reference') + '</a>' : ''}
     <a class="modal-link link-primary" href="https://www.soinc.org/${ev.soincSlug}" target="_blank">📋 Official Rules (soinc.org)</a>
     <a class="modal-link link-secondary" href="https://scioly.org/wiki/index.php/${ev.wikiSlug}" target="_blank">📘 Scioly.org Wiki</a>
     <a class="modal-link link-secondary" href="https://scioly.org/tests/" target="_blank">📄 Practice Tests</a>
@@ -212,36 +227,81 @@ function setResultTeam(team, btn) {
   renderResults();
 }
 
+// The scorebook reads in five chapters rather than one alphabetical list.
+const RESULT_CHAPTERS = [
+  { title: 'Life science', events: ['Anatomy and Physiology', 'Designer Genes', 'Disease Detectives', 'Entomology', 'Water Quality'] },
+  { title: 'Earth & space', events: ['Astronomy', 'Dynamic Planet', 'Remote Sensing', 'Rocks and Minerals'] },
+  { title: 'Physical science', events: ['Chemistry Lab', 'Circuit Lab', 'Forensics', 'Machines', 'Materials Science'] },
+  { title: 'Builds', events: ['Boomilever', 'Bungee Drop', 'Electric Vehicle', 'Helicopter', 'Hovercraft', 'Robot Tour'] },
+  { title: 'Inquiry', events: ['Codebusters', 'Experimental Design', 'Write It Do It'] }
+];
+
+// Three bars, 2nd–1st–3rd, with the highlighted lane for the given rank (1–3).
+function podiumHTML(rank, labels, large) {
+  const lanes = [2, 1, 3].map(place => {
+    const label = labels ? labels[place - 1] : '';
+    const mine = place === rank;
+    return `<div class="podium-lane${mine ? ' is-riverdale' : ''}" data-place="${place}">
+      ${label ? `<span class="podium-school">${escapeHTML(label)}</span>` : ''}
+      <span class="podium-bar"><span class="podium-place">${ordinal(place)}</span></span>
+    </div>`;
+  }).join('');
+  return `<div class="podium${large ? ' podium-lg' : ''}" role="img" aria-label="Podium: ${ordinal(rank)} place">${lanes}<span class="podium-base"></span></div>`;
+}
+
 function renderResults() {
   const grid = document.getElementById('results-grid');
   grid.innerHTML = '';
   const search = document.getElementById('result-search').value.toLowerCase();
+  const seen = new Set();
+  const chapters = RESULT_CHAPTERS.map(chapter => ({
+    title: chapter.title,
+    events: chapter.events.filter(name => { seen.add(name); return REGIONAL_EVENTS.includes(name); })
+  }));
+  // Any event missing from the chapter map still renders, in a closing chapter.
+  const rest = REGIONAL_EVENTS.filter(name => !seen.has(name));
+  if (rest.length) chapters.push({ title: 'More events', events: rest });
 
-  REGIONAL_EVENTS.forEach((evName, idx) => {
-    if (search && !evName.toLowerCase().includes(search)) return;
+  let chapterNumber = 0;
+  chapters.forEach(chapter => {
+    const names = chapter.events.filter(name => !search || name.toLowerCase().includes(search));
+    if (!names.length) return;
+    chapterNumber += 1;
+    const mark = document.createElement('div');
+    mark.className = 'results-chapter-mark';
+    mark.dataset.chapter = String(chapterNumber);
+    mark.dataset.chapterTitle = chapter.title;
+    mark.innerHTML = `<span class="chapter-mark-num">${String(chapterNumber).padStart(2, '0')}</span><span class="chapter-mark-title">${escapeHTML(chapter.title)}</span><span class="chapter-mark-count">${names.length} event${names.length === 1 ? '' : 's'}</span>`;
+    grid.appendChild(mark);
 
-    const scoreA = RIVERDALE_A_SCORES[idx];
-    const scoreB = RIVERDALE_B_SCORES[idx];
-    const membersA = TEAM_A_ASSIGNMENTS[evName] || [];
-    const membersB = TEAM_B_ASSIGNMENTS[evName] || [];
-    const icon = REGIONAL_ICONS[evName] || '📋';
-    const type = REGIONAL_TYPES[evName] || 'study';
-    const iconClass = type === 'study' ? 'icon-study' : type === 'build' ? 'icon-build' : 'icon-lab';
-    const badgeClass = type === 'study' ? 'badge-study' : type === 'build' ? 'badge-build' : 'badge-lab';
-    const badgeLabel = type === 'study' ? 'Study' : type === 'build' ? 'Build' : 'Lab / Hybrid';
+    names.forEach(evName => {
+      const idx = REGIONAL_EVENTS.indexOf(evName);
+      const scoreA = RIVERDALE_A_SCORES[idx];
+      const scoreB = RIVERDALE_B_SCORES[idx];
+      const membersA = TEAM_A_ASSIGNMENTS[evName] || [];
+      const membersB = TEAM_B_ASSIGNMENTS[evName] || [];
+      const icon = REGIONAL_ICONS[evName] || '📋';
+      const type = REGIONAL_TYPES[evName] || 'study';
+      const iconClass = type === 'study' ? 'icon-study' : type === 'build' ? 'icon-build' : 'icon-lab';
+      const badgeClass = type === 'study' ? 'badge-study' : type === 'build' ? 'badge-build' : 'badge-lab';
+      const badgeLabel = type === 'study' ? 'Study' : type === 'build' ? 'Build' : 'Lab / Hybrid';
+      const meta = { chapter: chapterNumber, chapterTitle: chapter.title };
 
-    if (currentResultTeam === 'A') {
-      renderOneResultCard(grid, evName, scoreA, membersA, 'A', icon, iconClass, badgeClass, badgeLabel, idx);
-    } else if (currentResultTeam === 'B') {
-      renderOneResultCard(grid, evName, scoreB, membersB, 'B', icon, iconClass, badgeClass, badgeLabel, idx);
-    } else {
-      renderOneResultCard(grid, evName, scoreA, membersA, 'A', icon, iconClass, badgeClass, badgeLabel, idx, scoreB, membersB);
-    }
+      if (currentResultTeam === 'A') {
+        renderOneResultCard(grid, evName, scoreA, membersA, 'A', icon, iconClass, badgeClass, badgeLabel, idx, undefined, undefined, meta);
+      } else if (currentResultTeam === 'B') {
+        renderOneResultCard(grid, evName, scoreB, membersB, 'B', icon, iconClass, badgeClass, badgeLabel, idx, undefined, undefined, meta);
+      } else {
+        renderOneResultCard(grid, evName, scoreA, membersA, 'A', icon, iconClass, badgeClass, badgeLabel, idx, scoreB, membersB, meta);
+      }
+    });
   });
+  grid.dataset.chapterCount = String(chapterNumber);
+  if (!chapterNumber) grid.innerHTML = '<div class="event-empty">No matching events in the 2026 scorebook.</div>';
   initScrollAnimations();
 }
 
-function renderOneResultCard(grid, evName, score, members, teamLabel, icon, iconClass, badgeClass, badgeLabel, idx, otherScore, otherMembers) {
+function renderOneResultCard(grid, evName, score, members, teamLabel, icon, iconClass, badgeClass, badgeLabel, idx, otherScore, otherMembers, meta) {
   const noEntry = score === 32 && members.length === 0;
   let placeBadgeClass = 'noplace';
   if (score <= 3) placeBadgeClass = 'top3';
@@ -250,14 +310,24 @@ function renderOneResultCard(grid, evName, score, members, teamLabel, icon, icon
   let secondLine = '';
   if (otherScore !== undefined) {
     const otherNoEntry = otherScore === 32 && (!otherMembers || otherMembers.length === 0);
-    secondLine = `<div style="font-size:0.8rem;color:var(--text-light);margin-top:4px;padding-top:4px;border-top:1px solid #f0e8e8;">
-      <strong>Team B:</strong> ${otherNoEntry ? 'No entry' : ordinal(otherScore) + ' place'}${otherMembers && otherMembers.length ? ' — ' + otherMembers.join(', ') : ''}
+    secondLine = `<div class="result-second-team">
+      <strong>Team B:</strong> ${otherNoEntry ? 'No entry' : ordinal(otherScore) + ' place'}${otherMembers && otherMembers.length ? ' · ' + otherMembers.join(', ') : ''}
     </div>`;
   }
 
   const card = document.createElement('div');
-  card.className = 'result-card reveal tilt-card shine-surface';
+  card.className = 'result-card reveal';
+  card.setAttribute('role', 'button');
+  card.setAttribute('tabindex', '0');
+  card.setAttribute('aria-label', 'View ' + evName + ' results');
+  card.dataset.event = evName;
+  card.dataset.rank = noEntry ? '' : String(score);
+  if (meta) { card.dataset.chapter = String(meta.chapter); card.dataset.chapterTitle = meta.chapterTitle; }
+  card.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openResultModal(evName, idx); }
+  });
   card.style.setProperty('--i', idx % 12);
+  const medal = !noEntry && score <= 3;
   card.innerHTML = `
     <div class="result-card-top">
       <div class="event-icon ${iconClass}">${icon}</div>
@@ -265,21 +335,23 @@ function renderOneResultCard(grid, evName, score, members, teamLabel, icon, icon
         <h3>${evName}</h3>
         <span class="event-type-badge ${badgeClass}">${badgeLabel}</span>
       </div>
+      <span class="result-card-index" aria-hidden="true">${String(idx + 1).padStart(2, '0')}</span>
     </div>
-    <div class="result-placement">
+    <div class="result-placement${medal ? ' has-podium' : ''}">
       <div class="placement-badge ${placeBadgeClass}">${noEntry ? '—' : ordinal(score)}</div>
       <div class="placement-text">
         ${noEntry
           ? `<strong>No entry (Team ${teamLabel})</strong><br>Event was not staffed`
-          : `<strong>${ordinal(score)} place</strong> · Team ${teamLabel} · out of 32 teams${members.length ? '<br>' + members.join(', ') : ''}`
+          : `<strong>${ordinal(score)} place</strong> · Team ${teamLabel} · of 32 teams${members.length ? '<br>' + members.join(', ') : ''}`
         }
         ${secondLine}
       </div>
+      ${medal ? podiumHTML(score) : ''}
     </div>
   `;
   card.addEventListener('click', () => openResultModal(evName, idx));
-  attachPointerGlow(card);
-  attachTilt(card);
+
+
   grid.appendChild(card);
 }
 
@@ -309,40 +381,15 @@ function openResultModal(evName, idx) {
 
   const body = document.getElementById('result-modal-body');
 
-  let placementAHTML = '';
-  if (noEntryA) {
-    placementAHTML = `<div class="tip-box"><strong>Team A — No entry.</strong> This event was not staffed by Team A.</div>`;
-  } else {
-    placementAHTML = `
-      <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px;">
-        <div class="placement-badge ${scoreA <= 3 ? 'top3' : scoreA <= 10 ? 'top10' : 'noplace'}" style="width:52px;height:52px;font-size:1.5rem;">${ordinal(scoreA)}</div>
-        <div>
-          <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--crimson-deep);font-weight:700;">Team A — ${ordinal(scoreA)} Place</div>
-          <div style="font-size:0.85rem;color:var(--text-light);">out of 32 teams</div>
-        </div>
-      </div>`;
-  }
-
-  let placementBHTML = '';
-  if (noEntryB) {
-    placementBHTML = `<div class="tip-box" style="margin-top:12px;"><strong>Team B — No entry.</strong> This event was not staffed by Team B.</div>`;
-  } else {
-    placementBHTML = `
-      <div style="display:flex;align-items:center;gap:16px;margin-top:12px;">
-        <div class="placement-badge ${scoreB <= 3 ? 'top3' : scoreB <= 10 ? 'top10' : 'noplace'}" style="width:52px;height:52px;font-size:1.5rem;">${ordinal(scoreB)}</div>
-        <div>
-          <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--crimson-deep);font-weight:700;">Team B — ${ordinal(scoreB)} Place</div>
-          <div style="font-size:0.85rem;color:var(--text-light);">out of 32 teams</div>
-        </div>
-      </div>`;
-  }
-
-  let membersHTML = '';
-  if (membersA.length > 0) {
-    membersHTML += `<div style="margin-bottom:8px;"><strong style="font-size:0.82rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--crimson);">Team A</strong><div class="team-member-chips">${membersA.map(m => `<span class="team-chip">👤 ${m}</span>`).join('')}</div></div>`;
-  }
-  if (membersB.length > 0) {
-    membersHTML += `<div><strong style="font-size:0.82rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--gold);">Team B</strong><div class="team-member-chips">${membersB.map(m => `<span class="team-chip">👤 ${m}</span>`).join('')}</div></div>`;
+  function teamPanel(team, score, noEntry, members) {
+    return `<article class="result-team-panel" data-result-team="${team}">
+      <div class="result-team-eyebrow">RIVERDALE / TEAM ${team}</div>
+      <div class="result-rank">${noEntry ? '—' : ordinal(score)}</div>
+      <p>${noEntry ? 'No entry · this event was not staffed.' : 'Place out of 32 teams'}</p>
+      ${noEntry ? '' : `<div class="rank-track" aria-hidden="true"><span style="left:${(score - 1) / 31 * 100}%"></span></div><div class="rank-scale" aria-hidden="true"><span>1st</span><span>32nd</span></div>`}
+      <div class="result-competitor-label">COMPETITORS</div>
+      <div class="team-member-chips">${members.length ? members.map(m => `<span class="team-chip">${m}</span>`).join('') : '<span class="result-unassigned">No competitors assigned</span>'}</div>
+    </article>`;
   }
 
   const inTop5A = top5.some(t => t[0].includes('Riverdale') && t[0].includes('A'));
@@ -375,24 +422,53 @@ function openResultModal(evName, idx) {
     </tr>`;
   }
 
+  const podiumLabels = [1, 2, 3].map(place => (top5.find(t => t[1] === place) || [''])[0]);
+  const riverdaleMedal = [scoreA, scoreB].find(s => s <= 3);
+  const modalPodium = top5.length >= 3
+    ? `<div class="result-podium-wrap"><div class="result-competitor-label">TOP THREE · ${escapeHTML(evName).toUpperCase()}</div>${podiumHTML(riverdaleMedal || 0, podiumLabels, true)}</div>`
+    : '';
+
   body.innerHTML = `
-    <div class="modal-section">
-      <h3>🏅 Riverdale's Placements</h3>
-      ${placementAHTML}
-      ${placementBHTML}
+    ${modalPodium}
+    <div class="result-detail-toolbar"><h3>Riverdale’s placements</h3>
+      <div class="result-team-switch" role="group" aria-label="Compare team results">
+        <button type="button" aria-pressed="true" onclick="setResultDetailTeam('all', this)">Compare</button>
+        <button type="button" aria-pressed="false" onclick="setResultDetailTeam('A', this)">Team A</button>
+        <button type="button" aria-pressed="false" onclick="setResultDetailTeam('B', this)">Team B</button>
+      </div>
     </div>
-    ${membersHTML ? `<div class="modal-section"><h3>👥 Competitors</h3>${membersHTML}</div>` : ''}
-    <div class="modal-section">
-      <h3>🏆 Top 5 Standings</h3>
+    <div class="result-comparison">${teamPanel('A', scoreA, noEntryA, membersA)}${teamPanel('B', scoreB, noEntryB, membersB)}</div>
+    <details class="result-standings-disclosure" open>
+      <summary>Top 5 standings <span>+ Riverdale’s finish</span></summary>
       <table class="result-standings-table">
-        <thead><tr><th>Place</th><th>School</th></tr></thead>
+        <thead><tr><th scope="col">Place</th><th scope="col">School</th></tr></thead>
         <tbody>${tableRows}</tbody>
       </table>
+    </details>
+    <div class="result-detail-nav">
+      <button type="button" onclick="stepResultDetail(${idx}, -1)">← Previous event</button>
+      <span>${idx + 1} / ${REGIONAL_EVENTS.length}</span>
+      <button type="button" onclick="stepResultDetail(${idx}, 1)">Next event →</button>
     </div>
   `;
+  document.getElementById('result-modal').scrollTop = 0;
 
   document.getElementById('result-modal-overlay').classList.remove('hidden');
   document.body.style.overflow = 'hidden';
+}
+
+function setResultDetailTeam(team, button) {
+  const modal = document.getElementById('result-modal');
+  modal.querySelectorAll('[data-result-team]').forEach(panel => {
+    panel.hidden = team !== 'all' && panel.dataset.resultTeam !== team;
+  });
+  modal.querySelectorAll('.result-team-switch button').forEach(control => control.setAttribute('aria-pressed', String(control === button)));
+}
+
+function stepResultDetail(index, direction) {
+  const next = (index + direction + REGIONAL_EVENTS.length) % REGIONAL_EVENTS.length;
+  openResultModal(REGIONAL_EVENTS[next], next);
+  document.getElementById('result-modal').focus({ preventScroll: true });
 }
 
 function closeResultModal() {
@@ -465,8 +541,8 @@ function renderRoster() {
   membersToShow.forEach((member, i) => {
     const isLeader = leaders.some(l => member.name.startsWith(l));
     const card = document.createElement('div');
-    card.className = 'roster-card reveal tilt-card shine-surface';
-    card.style.setProperty('--i', i % 12);
+    card.className = 'roster-card reveal';
+    card.style.setProperty('--i', i % 3);
     card.innerHTML = `
       <span class="roster-team-label ${member.team === 'A' ? 'roster-team-a' : 'roster-team-b'}">Team ${member.team}</span>
       <h3>${member.name}</h3>
@@ -475,8 +551,8 @@ function renderRoster() {
         ${member.events.map(e => `<span class="roster-event-tag">${e}</span>`).join('')}
       </div>
     `;
-    attachPointerGlow(card);
-    attachTilt(card);
+
+
     grid.appendChild(card);
   });
   initScrollAnimations();
@@ -878,8 +954,8 @@ function renderLeadersRoster() {
     const teamsLabel = student.teams.map(team => `Team ${team}`).join(' / ');
     const notesStatus = profile.notes ? 'Notes added' : 'Notes blank';
     const card = document.createElement('div');
-    card.className = 'roster-card reveal tilt-card shine-surface';
-    card.style.setProperty('--i', i % 12);
+    card.className = 'roster-card reveal';
+    card.style.setProperty('--i', i % 3);
     card.innerHTML = `
       <span class="roster-team-label ${student.teams.includes('A') ? 'roster-team-a' : 'roster-team-b'}">${teamsLabel}</span>
       <h3>${escapeHTML(student.name)}</h3>
@@ -889,8 +965,8 @@ function renderLeadersRoster() {
       </div>
     `;
     card.addEventListener('click', () => openLeaderStudentModal(student.name));
-    attachPointerGlow(card);
-    attachTilt(card);
+
+
     grid.appendChild(card);
   });
 
@@ -945,20 +1021,47 @@ function closeLeaderStudentModalOutside(e) {
 // ============ NAVIGATION ============
 
 function showView(name, tabEl) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('view-' + name).classList.add('active');
-  if (tabEl) tabEl.classList.add('active');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-
-  if (name === 'regional') renderResults();
-  if (name === 'roster') renderRoster();
-  if (name === 'leaders') initLeadersPage();
-
-  setTimeout(() => {
+  const target = document.getElementById('view-' + name);
+  if (!target) return Promise.resolve();
+  const sequence = ++navigationSequence;
+  activeViewTransition?.skipTransition();
+  const change = () => {
+    if (sequence !== navigationSequence) return;
+    window.SiteMotion?.leave();
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => {
+      t.classList.remove('active');
+      t.removeAttribute('aria-current');
+    });
+    target.classList.add('active');
+    const tab = tabEl || Array.from(document.querySelectorAll('.nav-tab')).find(t => t.getAttribute('onclick').includes("'" + name + "'"));
+    if (tab) { tab.classList.add('active'); tab.setAttribute('aria-current', 'page'); }
+    if (window.SiteMotion) window.SiteMotion.scrollTop();
+    else window.scrollTo({ top: 0, behavior: 'instant' });
+    if (name === 'events' && !document.getElementById('events-grid').children.length) filterEvents();
+    if (name === 'regional') renderResults();
+    if (name === 'roster') renderRoster();
+    if (name === 'leaders') initLeadersPage();
+    document.dispatchEvent(new CustomEvent('site:viewchange', { detail: { name } }));
     initScrollAnimations();
-    refreshInteractiveCards();
-  }, 50);
+  };
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (document.startViewTransition && !reduced) {
+    activeViewTransition = document.startViewTransition(change);
+    activeViewTransition.finished.catch(() => {});
+    // A skipped transition rejects this promise; callers may not await it.
+    activeViewTransition.updateCallbackDone.catch(() => {});
+    activeViewTransition.ready?.catch(() => {});
+    return activeViewTransition.updateCallbackDone;
+  }
+  change();
+  if (!reduced && target.animate) {
+    target.animate([
+      { clipPath: 'inset(0 100% 0 0)' },
+      { clipPath: 'inset(0 0% 0 0)' }
+    ], { duration: 340, easing: 'cubic-bezier(.22,1,.36,1)' });
+  }
+  return Promise.resolve();
 }
 
 document.addEventListener('keydown', e => {
@@ -970,251 +1073,9 @@ document.addEventListener('keydown', e => {
 });
 
 
-// ============ SCROLL ANIMATIONS ============
-
+// Legacy renderer hook. Motion is managed by the scoped GSAP controller in features.js.
 function initScrollAnimations() {
-  if (scrollAnimationObserver) scrollAnimationObserver.disconnect();
-
-  scrollAnimationObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        scrollAnimationObserver.unobserve(entry.target);
-      }
-    });
-  }, {
-    threshold: 0.08,
-    rootMargin: '0px 0px -40px 0px'
-  });
-
-  document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(el => {
-    if (!el.classList.contains('visible')) {
-      scrollAnimationObserver.observe(el);
-    }
-  });
+  window.SiteMotion?.refreshView();
 }
 
-
-// ============ ADVANCED INTERACTIONS ============
-
-function attachPointerGlow(el) {
-  if (el.dataset.glowBound === 'true') return;
-  el.dataset.glowBound = 'true';
-
-  el.addEventListener('pointermove', (e) => {
-    const rect = el.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    el.style.setProperty('--mx', `${x}%`);
-    el.style.setProperty('--my', `${y}%`);
-  });
-}
-
-function attachTilt(el) {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  if (el.dataset.tiltBound === 'true') return;
-  el.dataset.tiltBound = 'true';
-
-  el.addEventListener('pointermove', (e) => {
-    const rect = el.getBoundingClientRect();
-    const px = (e.clientX - rect.left) / rect.width;
-    const py = (e.clientY - rect.top) / rect.height;
-    const rotateY = (px - 0.5) * 8;
-    const rotateX = (0.5 - py) * 8;
-    el.style.transform = `translateY(-8px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-  });
-
-  el.addEventListener('pointerleave', () => {
-    el.style.transform = '';
-  });
-}
-
-function refreshInteractiveCards() {
-  document.querySelectorAll('.tilt-card').forEach(card => {
-    attachPointerGlow(card);
-    attachTilt(card);
-  });
-}
-
-function initParallaxHero() {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-  const heroes = document.querySelectorAll('.home-hero, .newcomer-hero, .regional-hero');
-  window.addEventListener('scroll', () => {
-    const scrollY = window.scrollY;
-    heroes.forEach(hero => {
-      const rate = Math.min(scrollY * 0.04, 18);
-      hero.style.transform = `translateY(${rate * 0.15}px)`;
-    });
-  }, { passive: true });
-}
-
-
-// Initialize
-renderEvents(EVENTS);
-document.addEventListener('DOMContentLoaded', () => {
-  initScrollAnimations();
-  refreshInteractiveCards();
-  initParallaxHero();
-});
-initScrollAnimations();
-refreshInteractiveCards();
-
-// ============ LIVE HEADER PARTICLE SYSTEM ============
-
-function initLiveHeader() {
-  const header = document.getElementById('live-header');
-  const canvas = document.getElementById('header-particles');
-  if (!header || !canvas) return;
-
-  const ctx = canvas.getContext('2d');
-  let width = 0;
-  let height = 0;
-  let dpr = Math.min(window.devicePixelRatio || 1, 2);
-  let particles = [];
-  let mouse = {
-    x: null,
-    y: null,
-    active: false
-  };
-
-  function resizeCanvas() {
-    const rect = header.getBoundingClientRect();
-    width = rect.width;
-    height = rect.height;
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width = Math.floor(width * dpr);
-    canvas.height = Math.floor(height * dpr);
-    canvas.style.width = width + 'px';
-    canvas.style.height = height + 'px';
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    createParticles();
-  }
-
-  function createParticles() {
-    const count = Math.max(55, Math.floor(width / 18));
-    particles = [];
-
-    for (let i = 0; i < count; i++) {
-      particles.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        baseY: Math.random() * height,
-        r: Math.random() * 2.2 + 0.5,
-        speedX: (Math.random() - 0.5) * 0.45,
-        speedY: (Math.random() - 0.5) * 0.18,
-        drift: Math.random() * Math.PI * 2,
-        driftSpeed: Math.random() * 0.018 + 0.004,
-        alpha: Math.random() * 0.45 + 0.15,
-        gold: Math.random() > 0.45
-      });
-    }
-  }
-
-  function drawConnection(a, b, dist) {
-    const maxDist = 110;
-    if (dist > maxDist) return;
-    const opacity = (1 - dist / maxDist) * 0.14;
-    ctx.strokeStyle = a.gold || b.gold
-      ? `rgba(232, 201, 106, ${opacity})`
-      : `rgba(255, 255, 255, ${opacity * 0.8})`;
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(a.x, a.y);
-    ctx.lineTo(b.x, b.y);
-    ctx.stroke();
-  }
-
-  function animate() {
-    ctx.clearRect(0, 0, width, height);
-
-    for (let i = 0; i < particles.length; i++) {
-      const p = particles[i];
-
-      p.drift += p.driftSpeed;
-      p.x += p.speedX + Math.cos(p.drift) * 0.18;
-      p.y += p.speedY + Math.sin(p.drift * 1.2) * 0.12;
-
-      if (p.x < -20) p.x = width + 20;
-      if (p.x > width + 20) p.x = -20;
-      if (p.y < -20) p.y = height + 20;
-      if (p.y > height + 20) p.y = -20;
-
-      if (mouse.active && mouse.x !== null && mouse.y !== null) {
-        const dx = mouse.x - p.x;
-        const dy = mouse.y - p.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 160) {
-          const force = (160 - dist) / 160;
-          p.x -= (dx / (dist || 1)) * force * 0.55;
-          p.y -= (dy / (dist || 1)) * force * 0.42;
-        }
-      }
-
-      for (let j = i + 1; j < particles.length; j++) {
-        const q = particles[j];
-        const dx = p.x - q.x;
-        const dy = p.y - q.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        drawConnection(p, q, dist);
-      }
-
-      const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 7);
-      if (p.gold) {
-        gradient.addColorStop(0, `rgba(232, 201, 106, ${p.alpha})`);
-        gradient.addColorStop(0.4, `rgba(232, 201, 106, ${p.alpha * 0.45})`);
-        gradient.addColorStop(1, 'rgba(232, 201, 106, 0)');
-      } else {
-        gradient.addColorStop(0, `rgba(255, 255, 255, ${p.alpha})`);
-        gradient.addColorStop(0.4, `rgba(255, 255, 255, ${p.alpha * 0.3})`);
-        gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-      }
-
-      ctx.fillStyle = gradient;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r * 7, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = p.gold
-        ? `rgba(245, 230, 192, ${Math.min(0.95, p.alpha + 0.2)})`
-        : `rgba(255,255,255,${Math.min(0.9, p.alpha + 0.15)})`;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    if (mouse.active && mouse.x !== null && mouse.y !== null) {
-      const mouseGlow = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 120);
-      mouseGlow.addColorStop(0, 'rgba(232,201,106,0.18)');
-      mouseGlow.addColorStop(0.4, 'rgba(255,255,255,0.07)');
-      mouseGlow.addColorStop(1, 'rgba(255,255,255,0)');
-      ctx.fillStyle = mouseGlow;
-      ctx.beginPath();
-      ctx.arc(mouse.x, mouse.y, 120, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    requestAnimationFrame(animate);
-  }
-
-  header.addEventListener('mousemove', (e) => {
-    const rect = header.getBoundingClientRect();
-    mouse.x = e.clientX - rect.left;
-    mouse.y = e.clientY - rect.top;
-    mouse.active = true;
-  });
-
-  header.addEventListener('mouseleave', () => {
-    mouse.active = false;
-    mouse.x = null;
-    mouse.y = null;
-  });
-
-  window.addEventListener('resize', resizeCanvas);
-
-  resizeCanvas();
-  animate();
-}
-
-document.addEventListener('DOMContentLoaded', initLiveHeader);
-initLiveHeader();
+// Event and roster cards render when their views open, avoiding hidden DOM work at startup.
