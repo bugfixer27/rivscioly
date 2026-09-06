@@ -1972,7 +1972,7 @@ html[data-theme="dark"] .index-ghost.is-on { opacity: .12; }
 .regional-hero h2 { font: 500 clamp(2.6rem, 6vw, 6rem)/.98 var(--font-display); font-variation-settings: "SOFT" 70, "WONK" 1; letter-spacing: -.035em; color: var(--hairline); max-width: none; }
 .regional-hero p { color: #d9c9cf; font-size: 1.0625rem; max-width: 56ch; }
 .regional-meta-item { background: transparent; border: 1px solid #ffffff30; backdrop-filter: none; font-weight: 500; }
-.overall-standing { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin: 0 0 40px; border-bottom: 1px solid var(--line-soft); }
+.overall-standing { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; margin: 0 0 40px; border-bottom: 1px solid var(--line-soft); }
 .standing-card, html[data-theme="dark"] .standing-card { text-align: left; padding: 34px 28px 34px 0; border: 0; border-right: 1px solid var(--line-soft); border-radius: 0; background: transparent; box-shadow: none; }
 .standing-card:not(:first-child) { padding-left: 28px; }
 .standing-card:last-child { border-right: 0; }
